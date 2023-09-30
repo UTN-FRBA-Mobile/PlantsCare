@@ -19,7 +19,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 val bottomNavigationItems = listOf(
     Screen.MyPlants,
     Screen.Watering,
-    Screen.Guides
+    Screen.NewPlant,
+    Screen.Guides,
+    Screen.Profile
 )
 @Composable
 fun BottomNavigation(
