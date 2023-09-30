@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 
 @Composable
-fun MyPlants(navController: NavHostController) {
+fun Guides(navController: NavHostController) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "My Plants")
+        Text(text = "Guides")
     }
 }
