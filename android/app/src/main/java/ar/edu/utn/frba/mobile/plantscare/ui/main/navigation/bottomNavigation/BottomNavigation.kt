@@ -10,11 +10,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.darkGreen500Color
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.navBarBackgroundColor
 
 val bottomNavigationItems = listOf(
     Screen.MyPlants,
@@ -29,6 +32,10 @@ fun BottomNavigation(
 ) {
     BottomAppBar(
         modifier = Modifier.fillMaxWidth(),
+        backgroundColor = navBarBackgroundColor,
+        contentColor = darkGreen500Color,
+
+
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
@@ -39,7 +46,7 @@ fun BottomNavigation(
             bottomNavigationItems.forEach { screen ->
                 BottomNavigationItem(
                     icon = { Icon(screen.icon, contentDescription = null) },
-                    label = { Text(stringResource(screen.resourceId)) },
+                    label = { Text(stringResource(screen.resourceId), color = Color.Gray) },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                     onClick = {
                         navController.navigate(screen.route) {
