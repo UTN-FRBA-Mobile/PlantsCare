@@ -18,9 +18,9 @@ import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
-import ar.edu.utn.frba.mobile.plantscare.ui.main.NewPlant
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
+import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
 
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
     object MyPlants : Screen("plants", R.string.my_plants_screen_button, Icons.Default.Home)
@@ -36,7 +36,7 @@ fun BottomNavigationGraph(
     paddingValues: PaddingValues
 ) {
     NavHost(navController = navController,
-        startDestination = Screen.NewPlant.route,
+        startDestination = Screen.MyPlants.route,
         Modifier.padding(paddingValues)
     ) {
         composable(route= Screen.MyPlants.route) { MyPlants(navController) }

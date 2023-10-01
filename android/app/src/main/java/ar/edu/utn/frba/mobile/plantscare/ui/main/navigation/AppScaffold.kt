@@ -13,7 +13,7 @@ fun AppScaffold(navController: NavHostController) {
     AppTheme {
         Scaffold(
             topBar = { TopNavigation(navController) },
-            bottomBar = { BottomNavigation(navController) }
+            bottomBar = { BottomNavigation(navController) },
         ){
             paddingValues -> BottomNavigationGraph(navController, paddingValues)
         }

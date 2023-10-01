@@ -16,7 +16,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import ar.edu.utn.frba.mobile.plantscare.ui.theme.darkGreen500Color
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.navBarBackgroundColor
 
 val bottomNavigationItems = listOf(
@@ -33,7 +33,7 @@ fun BottomNavigation(
     BottomAppBar(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = navBarBackgroundColor,
-        contentColor = darkGreen500Color,
+        contentColor = DarkGreen500Color,
 
 
     ) {

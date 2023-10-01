@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Plants Care</string>
+
     <string name="my_plants_screen_button">Plants</string>
     <string name="new_plant_button">  </string>
     <string name="watering_button">Watering</string>
     <string name="guides_button">Guides</string>
     <string name="profile_button">Profile</string>
 
-    <string name="button">Hi</string>
-    <string name="ok">Ok</string>
+    <string name="permission_button">Grant permission</string>
+
+    <string name="add_plant_camera_button">"add plant"</string>
+
 </resources>
