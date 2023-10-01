@@ -9,6 +9,7 @@
 
     <string name="permission_button">Grant permission</string>
 
-    <string name="add_plant_camera_button">"add plant"</string>
+    <string name="add_plant_camera_button">" Add plant "</string>
+    <string name="add_plant_metadata_button">" Add plant "</string>
 
 </resources>

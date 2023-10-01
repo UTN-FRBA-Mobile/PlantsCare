@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
-import ar.edu.utn.frba.mobile.plantscare.ui.theme.SalmonColor
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftGreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftRed
 
@@ -79,7 +79,7 @@ fun PlantItem(plant: Plant) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SalmonColor)
+            .background(LightGreen50Color)
             .padding(8.dp)
     ) {
         Row (
