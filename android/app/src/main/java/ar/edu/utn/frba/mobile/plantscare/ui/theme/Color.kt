@@ -9,6 +9,8 @@ val WhiteColor = Color(0xFFFFFFFF)
 val DarkGreen500Color = Color(0xFF4CAF50)
 val Green500Color = Color(0xFF4CAF50)
 val LightGreen500Color = Color(0xFF8BC34A)
+val LightGreen50Color = Color(0xFFF1F8E9)
+val LightYellow50Color = Color(0xFFF9FBE7)
 
 var navBarBackgroundColor = Color(0xFFFFFFFF)
 
