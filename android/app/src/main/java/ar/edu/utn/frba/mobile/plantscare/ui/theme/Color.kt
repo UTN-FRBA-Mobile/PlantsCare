@@ -17,3 +17,6 @@ var navBarBackgroundColor = Color(0xFFFFFFFF)
 val SalmonColor = Color(255, 214, 214)
 val SoftGreen = Color(146, 227, 169)
 val SoftRed = Color(254, 129, 129)
+
+val Blue = Color(29, 162, 236)
+val SkyBlue = Color(146, 215, 252)
