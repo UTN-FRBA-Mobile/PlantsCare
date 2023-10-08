@@ -15,6 +15,6 @@ fun Profile(navController: NavHostController) {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Profile")
+        Text(text = "Profile, (TEST APP)")
     }
 }
