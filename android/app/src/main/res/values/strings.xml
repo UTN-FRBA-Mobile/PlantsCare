@@ -10,7 +10,7 @@
     <string name="my_plant_info">My Plant</string>
     <string name="my_plant_gallery">Gallery</string>
     <string name="my_plant_history">History</string>
-    <string name="my_plant_watering">Watering</string>
+    <string name="my_plant_frequency">Frequency</string>
 
     <string name="permission_button">Grant permission</string>
 
