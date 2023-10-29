@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ar.edu.utn.frba.mobile.plantscare.ui.main.model.PlantInfo
-import ar.edu.utn.frba.mobile.plantscare.ui.main.services.PlantsService
+import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
+import ar.edu.utn.frba.mobile.plantscare.services.PlantsService
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.Blue
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SalmonColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SkyBlue

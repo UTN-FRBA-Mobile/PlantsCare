@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import ar.edu.utn.frba.mobile.plantscare.ui.main.model.PlantInfo
-import ar.edu.utn.frba.mobile.plantscare.ui.main.services.PlantsService
+import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
+import ar.edu.utn.frba.mobile.plantscare.services.PlantsService
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.TextWithTitle
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SalmonColor

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -21,28 +22,34 @@ import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.navBarBackgroundColor
 
 val mainBottomNavigationItems = listOf(
-    MainScreen.MyPlants,
-    MainScreen.Watering,
-    MainScreen.NewPlant,
-    MainScreen.Guides,
-    MainScreen.Profile
+    Screen.MyPlants,
+    Screen.Watering,
+    Screen.NewPlant,
+    Screen.Guides,
+    Screen.Profile
 )
 
 val myPlantNavigationItems = listOf(
-    MyPlantScreen.MyPlantInfo,
-    MyPlantScreen.ImageGallery,
-    MyPlantScreen.History,
-    MyPlantScreen.WateringFrequency,
+    Screen.MyPlantInfo,
+    Screen.ImageGallery,
+    Screen.History,
+    Screen.WateringFrequency,
 )
 
 private fun getButtonsToRender(currentDestination: NavDestination?) =
-    if (currentDestination?.route?.contains("plants/{id}") == true)
-        myPlantNavigationItems
-    else
-        if(currentDestination?.route?.contains("login") == true)
-            listOf()
-        else
-            mainBottomNavigationItems
+    when {
+        isDestination(currentDestination, MyPlantBaseRoute) -> myPlantNavigationItems
+        isDestination(currentDestination, Screen.Login.route) -> listOf()
+        else -> mainBottomNavigationItems
+    }
+
+private fun isDestination(currentDestination: NavDestination?, route: String) =
+    currentDestination?.route?.contains(route) == true
+
+private fun getRouteToNavigate(
+    screen: Screen,
+    navBackStackEntry: NavBackStackEntry?
+) = screen.route.replace("{id}", navBackStackEntry?.arguments?.getString("id") ?: "0")
 
 @Composable
 fun BottomNavigation(
@@ -65,7 +72,7 @@ fun BottomNavigation(
                     label = { Text(stringResource(screen.resourceId), color = Color.Gray) },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                     onClick = {
-                        navController.navigate(screen.route) {
+                        navController.navigate(getRouteToNavigate(screen, navBackStackEntry)) {
                             // Pop up to the start destination of the graph to
                             // avoid building up a large stack of destinations
                             // on the back stack as users select items
@@ -84,3 +91,5 @@ fun BottomNavigation(
         }
     }
 }
+
+

@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
@@ -59,17 +60,11 @@ fun MyPlants(navController: NavHostController) {
     ) {
         MyPlantsContent {
             navController.navigate("plants/1/info"){
-                // Pop up to the start destination of the graph to
-                // avoid building up a large stack of destinations
-                // on the back stack as users select items
-            //    popUpTo(navController.graph.findStartDestination().id) {
-            //        saveState = true
-            //    }
-                // Avoid multiple copies of the same destination when
-                // reselecting the same item
-            //    launchSingleTop = true
-                // Restore state when reselecting a previously selected item
-            //    restoreState = true
+                popUpTo(navController.graph.findStartDestination().id) {
+                      saveState = true
+                  }
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
