@@ -2,6 +2,7 @@ package ar.edu.utn.frba.mobile.plantscare.ui.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,36 +57,54 @@ fun MyPlants(navController: NavHostController) {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        ShowPreview()
+        MyPlantsContent {
+            navController.navigate("plants/1/info"){
+                // Pop up to the start destination of the graph to
+                // avoid building up a large stack of destinations
+                // on the back stack as users select items
+            //    popUpTo(navController.graph.findStartDestination().id) {
+            //        saveState = true
+            //    }
+                // Avoid multiple copies of the same destination when
+                // reselecting the same item
+            //    launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+            //    restoreState = true
+            }
+        }
     }
 }
 
 @Composable
-fun PlantList(plantsList: List<Plant>) {
+fun PlantList(plantsList: List<Plant>, onClickPlant: () -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         items(plantsList) { plant ->
-            PlantItem(plant)
+            PlantItem(plant, onClickPlant)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
-fun PlantItem(plant: Plant) {
+fun PlantItem(plant: Plant, onClickPlant: () -> Unit ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(LightGreen50Color)
             .padding(8.dp)
+            .clickable {
+                onClickPlant()
+            }
     ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
+
         ) {
             Image(
                 painter = painterResource(id = plant.imageResId),
@@ -157,7 +176,11 @@ fun DayOfWeekItem(dayOfWeek: Int, isWatered: Boolean) {
 }
 
 @Composable
+private fun MyPlantsContent(onClickPlant: () -> Unit) {
+    PlantList(myPlantsList, onClickPlant)
+}
+@Composable
 @Preview
-private fun ShowPreview() {
-    PlantList(plantsList = myPlantsList)
+private fun MyPlantsPreview() {
+    MyPlantsContent {}
 }

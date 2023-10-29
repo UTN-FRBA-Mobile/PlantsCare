@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -19,13 +20,30 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.navBarBackgroundColor
 
-val bottomNavigationItems = listOf(
-    Screen.MyPlants,
-    Screen.Watering,
-    Screen.NewPlant,
-    Screen.Guides,
-    Screen.Profile
+val mainBottomNavigationItems = listOf(
+    MainScreen.MyPlants,
+    MainScreen.Watering,
+    MainScreen.NewPlant,
+    MainScreen.Guides,
+    MainScreen.Profile
 )
+
+val myPlantNavigationItems = listOf(
+    MyPlantScreen.MyPlantInfo,
+    MyPlantScreen.ImageGallery,
+    MyPlantScreen.History,
+    MyPlantScreen.WateringFrequency,
+)
+
+private fun getButtonsToRender(currentDestination: NavDestination?) =
+    if (currentDestination?.route?.contains("plants/{id}") == true)
+        myPlantNavigationItems
+    else
+        if(currentDestination?.route?.contains("login") == true)
+            listOf()
+        else
+            mainBottomNavigationItems
+
 @Composable
 fun BottomNavigation(
     navController: NavHostController,
@@ -34,8 +52,6 @@ fun BottomNavigation(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = navBarBackgroundColor,
         contentColor = DarkGreen500Color,
-
-
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
@@ -43,7 +59,7 @@ fun BottomNavigation(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            bottomNavigationItems.forEach { screen ->
+            getButtonsToRender(currentDestination).forEach { screen ->
                 BottomNavigationItem(
                     icon = { Icon(screen.icon, contentDescription = null) },
                     label = { Text(stringResource(screen.resourceId), color = Color.Gray) },
