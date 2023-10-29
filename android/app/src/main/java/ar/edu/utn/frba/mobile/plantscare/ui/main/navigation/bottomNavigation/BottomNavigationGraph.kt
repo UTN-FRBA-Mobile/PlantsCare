@@ -1,15 +1,18 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,10 +25,10 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.ImageGallery
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.MyPlantInfoView
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.PlantHistory
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.WateringFrequency
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.PlantHistory
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
 
 val MyPlantBaseRoute = "plants/{id}"
@@ -37,10 +40,10 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
     object Watering : Screen("watering", R.string.watering_button, Icons.Default.DateRange)
     object Guides : Screen("guides", R.string.guides_button, Icons.Default.Search)
     object Profile : Screen("profile", R.string.profile_button, Icons.Default.Person)
-    object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.Person)
-    object ImageGallery : Screen("${MyPlantBaseRoute}/gallery", R.string.my_plant_gallery, Icons.Default.Person)
-    object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.Person)
-    object WateringFrequency : Screen("${MyPlantBaseRoute}/watering", R.string.my_plant_watering, Icons.Default.Person)
+    object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.EnergySavingsLeaf)
+    object ImageGallery : Screen("${MyPlantBaseRoute}/gallery", R.string.my_plant_gallery, Icons.Default.PhotoLibrary)
+    object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.WaterDrop)
+    object WateringFrequency : Screen("${MyPlantBaseRoute}/frequency", R.string.my_plant_frequency, Icons.Default.Timeline)
 }
 
 @Composable
@@ -60,22 +63,18 @@ fun BottomNavigationGraph(
         composable(route= Screen.Profile.route) { Profile(navController) }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             MyPlantInfoView(navController)
         }
         composable(route= Screen.ImageGallery.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             ImageGallery(navController)
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             PlantHistory(navController)
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             WateringFrequency()
         }
     }
