@@ -47,13 +47,9 @@ fun LoginButton(navController: NavHostController) {
     onClick = { navController.navigate("plants")},
     colors = ButtonDefaults.buttonColors(backgroundColor = profileCardBackgroundColor),
     contentPadding = PaddingValues(20.dp),
-    shape = CircleShape,
-//    modifier = Modifier
-//      .height(30.dp)
-//      .width(120.dp),
+    shape = CircleShape
   ) {
     Row(
-//      modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
     ) {
