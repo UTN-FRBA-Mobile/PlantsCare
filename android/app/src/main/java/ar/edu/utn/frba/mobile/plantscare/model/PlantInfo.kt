@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.mobile.plantscare.ui.main.model
+package ar.edu.utn.frba.mobile.plantscare.model
 
 data class PlantInfo(
     val id: Int,

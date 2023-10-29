@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -17,17 +18,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
+import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.ImageGallery
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.MyPlantInfoView
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.PlantHistory
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
 
+val MyPlantBaseRoute = "plants/{id}"
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
+
+    object Login: Screen("login", R.string.my_plants_screen_button, Icons.Default.Home)
     object MyPlants : Screen("plants", R.string.my_plants_screen_button, Icons.Default.Home)
     object NewPlant : Screen("newPlant", R.string.new_plant_button, Icons.Default.Add)
     object Watering : Screen("watering", R.string.watering_button, Icons.Default.DateRange)
     object Guides : Screen("guides", R.string.guides_button, Icons.Default.Search)
     object Profile : Screen("profile", R.string.profile_button, Icons.Default.Person)
+    object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.Person)
+    object ImageGallery : Screen("${MyPlantBaseRoute}/gallery", R.string.my_plant_gallery, Icons.Default.Person)
+    object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.Person)
+    object WateringFrequency : Screen("${MyPlantBaseRoute}/watering", R.string.my_plant_watering, Icons.Default.Person)
 }
 
 @Composable
@@ -36,13 +49,34 @@ fun BottomNavigationGraph(
     paddingValues: PaddingValues
 ) {
     NavHost(navController = navController,
-        startDestination = Screen.MyPlants.route,
+        startDestination = Screen.Login.route,
         Modifier.padding(paddingValues)
     ) {
+        composable(route= Screen.Login.route) { Login(navController) }
         composable(route= Screen.MyPlants.route) { MyPlants(navController) }
         composable(route= Screen.NewPlant.route) { NewPlant(navController) }
         composable(route= Screen.Watering.route) { Watering(navController) }
         composable(route= Screen.Guides.route) { Guides(navController) }
         composable(route= Screen.Profile.route) { Profile(navController) }
+        composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            id?.let { Log.i("ID", it) }
+            MyPlantInfoView(navController)
+        }
+        composable(route= Screen.ImageGallery.route) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            id?.let { Log.i("ID", it) }
+            ImageGallery(navController)
+        }
+        composable(route= Screen.History.route) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            id?.let { Log.i("ID", it) }
+            PlantHistory(navController)
+        }
+        composable(route= Screen.WateringFrequency.route) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            id?.let { Log.i("ID", it) }
+            WateringFrequency()
+        }
     }
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -23,33 +22,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
-import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.AppScaffold
-import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.profileCardBackgroundColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
 
 @Composable
-fun Login() {
+fun Login(navController: NavHostController) {
   Box(
     contentAlignment = Alignment.Center,
     modifier = Modifier
       .fillMaxSize()
       .background(Color.White)
   ) {
-    LoginContent()
+    LoginContent(navController)
   }
 }
 
 @Composable
-fun LoginButton() {
+fun LoginButton(navController: NavHostController) {
   Button(
-    onClick = {  },
+    onClick = { navController.navigate("plants")},
     colors = ButtonDefaults.buttonColors(backgroundColor = profileCardBackgroundColor),
     contentPadding = PaddingValues(20.dp),
     shape = CircleShape,
@@ -80,9 +75,9 @@ fun LoginButton() {
   }
 }
 
-@Preview
+//@Preview
 @Composable
-fun LoginContent() {
+fun LoginContent(navController: NavHostController) {
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
@@ -99,6 +94,6 @@ fun LoginContent() {
         .height(500.dp)
         .width(500.dp)
     )
-    LoginButton()
+    LoginButton(navController)
   }
 }
