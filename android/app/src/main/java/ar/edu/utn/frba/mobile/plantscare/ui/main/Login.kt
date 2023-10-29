@@ -22,9 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.AppScaffold
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.profileCardBackgroundColor
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
 
 @Composable
 fun Login() {
@@ -41,13 +49,13 @@ fun Login() {
 @Composable
 fun LoginButton() {
   Button(
-    onClick = { "" },
-    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-    contentPadding = PaddingValues(16.dp),
+    onClick = {  },
+    colors = ButtonDefaults.buttonColors(backgroundColor = profileCardBackgroundColor),
+    contentPadding = PaddingValues(20.dp),
     shape = CircleShape,
-    modifier = Modifier
-      .height(30.dp)
-      .width(120.dp),
+//    modifier = Modifier
+//      .height(30.dp)
+//      .width(120.dp),
   ) {
     Row(
 //      modifier = Modifier.fillMaxWidth(),
@@ -58,11 +66,16 @@ fun LoginButton() {
         painter = painterResource(id = R.drawable.devicon_google),
         contentDescription = "Image",
         modifier = Modifier
-          .height(10.dp)
-          .width(10.dp)
+          .height(18.dp)
+          .width(18.dp)
       )
-      Spacer(modifier = Modifier.width(8.dp))
-      Text(text = "Sing in with google")
+      Spacer(modifier = Modifier.width(10.dp))
+      Text(
+        text = "Sing in with google",
+        fontSize = 20.sp, // Set the font size for the title
+        fontWeight = FontWeight.Bold, // Set font weight for bold text
+        color = textColor
+      )
     }
   }
 }
@@ -73,10 +86,18 @@ fun LoginContent() {
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
-    Text(text = "Plants Care")
+    Text(
+      text = "Plants Care",
+      fontSize = 50.sp, // Set the font size for the title
+      fontWeight = FontWeight.Bold, // Set font weight for bold text
+      color = Color.Black
+    )
     Image(
       painter = painterResource(id = R.drawable.login_image),
-      contentDescription = stringResource(id = R.string.login_image_content_description)
+      contentDescription = stringResource(id = R.string.login_image_content_description),
+      modifier = Modifier
+        .height(500.dp)
+        .width(500.dp)
     )
     LoginButton()
   }
