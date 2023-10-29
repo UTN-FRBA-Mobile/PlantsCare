@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView
+package ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

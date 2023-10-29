@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -26,10 +25,10 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.ImageGallery
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.MyPlantInfoView
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.PlantHistory
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlantView.WateringFrequency
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.PlantHistory
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
 
 val MyPlantBaseRoute = "plants/{id}"
@@ -64,22 +63,18 @@ fun BottomNavigationGraph(
         composable(route= Screen.Profile.route) { Profile(navController) }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             MyPlantInfoView(navController)
         }
         composable(route= Screen.ImageGallery.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             ImageGallery(navController)
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             PlantHistory(navController)
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            id?.let { Log.i("ID", it) }
             WateringFrequency()
         }
     }

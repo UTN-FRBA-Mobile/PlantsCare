@@ -12,12 +12,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.utils.getRouteToNavigate
+import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.utils.isDestination
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.navBarBackgroundColor
 
@@ -43,13 +44,6 @@ private fun getButtonsToRender(currentDestination: NavDestination?) =
         else -> mainBottomNavigationItems
     }
 
-private fun isDestination(currentDestination: NavDestination?, route: String) =
-    currentDestination?.route?.contains(route) == true
-
-private fun getRouteToNavigate(
-    screen: Screen,
-    navBackStackEntry: NavBackStackEntry?
-) = screen.route.replace("{id}", navBackStackEntry?.arguments?.getString("id") ?: "0")
 
 @Composable
 fun BottomNavigation(
