@@ -19,39 +19,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import java.time.LocalDateTime
-import kotlin.random.Random
-
-enum class WateringStatus {
-    WATERED,
-    NO_INFO,
-    NEEDS_WATERING,
-    NOT_WATERED
-}
-
-private fun getPlantHistoryExample(): List<PlantHistoryData> {
-    val startDate = LocalDateTime.of(2023, 10, 29, 0, 0)
-    val endDate = LocalDateTime.of(2023, 12, 25, 0, 0)
-    return generateSequence(startDate) { it.plusDays(1) }
-        .takeWhile { !it.isAfter(endDate) }
-        .map {
-            val randomStatus = WateringStatus.values().let { it[Random.nextInt(it.size)] }
-            PlantHistoryData(it, randomStatus, PlantHistoryColor.fromEnum(randomStatus))
-        }
-        .toList()
-}
-
-
+import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
-fun PlantHistory() {
-    val plantHistories = getPlantHistoryExample()
-    var lastDate by remember { mutableStateOf(LocalDateTime.now()) }
+fun PlantHistory(state: APICallState<PlantInfo>) {
+    loadScreen(state) {
+        println(it)
+        PlanHistoryView(it)
+    }
+}
+
+@Composable
+private fun PlanHistoryView(plantInfo: PlantInfo?) {
+    val plantHistories = plantInfo?.history?.map {
+        PlantHistoryData(
+            it.date.dropLast(1).toLocalDateTime(),
+            it.status,
+            PlantHistoryColor.fromEnum(it.status)
+        )
+    } ?: listOf()
+
+    var lastDate by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.UTC)) }
     Box(
         //contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-           // .background(Color.White)
+        // .background(Color.White)
     ) {
         Column {
             Text(
@@ -67,7 +65,7 @@ fun PlantHistory() {
                 items(plantHistories) { item ->
                     PlantHistoryItem(item)
                     Spacer(modifier = Modifier.height(16.dp))
-                    if(intArrayOf(1, 10, 20, 30).contains(item.date.dayOfMonth)) {
+                    if (intArrayOf(1, 28).contains(item.date.dayOfMonth)) {
                         DisposableEffect(Unit) {
                             lastDate = item.date
                             onDispose { }
@@ -83,5 +81,5 @@ fun PlantHistory() {
 @Preview
 @Composable
 fun PlantHistoryPreview() {
-    PlantHistory()
+    // PlantHistory()
 }

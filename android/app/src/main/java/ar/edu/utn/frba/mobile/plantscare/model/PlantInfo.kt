@@ -1,21 +1,28 @@
 package ar.edu.utn.frba.mobile.plantscare.model
 
-data class PlantInfo(
-    val id: Int,
+import kotlinx.serialization.Serializable
 
-    // Pantalla 1
-    val name: String,
-    val image: String,
+@Serializable
+data class PlantWateringHistory (
+    val date: String,
+    val status: WateringStatus
+)
+@Serializable
+data class PlantProperties (
     val size: String,
     val environment: String,
     val sunExposure: String,
     val difficulty: String,
-    val wateringFrequency: Int,
+)
+@Serializable
+data class PlantInfo(
+    val id: Int,
+    val type: String,
+    val name: String,
     val description: String,
-
-    // Pantalla 2
+    val currentWateringFrequency: Int,
+    val properties: PlantProperties,
     val imageGallery: List<String>,
-
-    // Pantalla 4
-    val wateringFrequencyByMonth: Map<String, Int>
-    )
+    val wateringFrequency: Map<String, Int>,
+    val history: List<PlantWateringHistory>
+)
