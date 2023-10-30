@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history
 
 import androidx.compose.ui.graphics.Color
+import ar.edu.utn.frba.mobile.plantscare.model.WateringStatus
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.Blue
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.Grey
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftBlue
