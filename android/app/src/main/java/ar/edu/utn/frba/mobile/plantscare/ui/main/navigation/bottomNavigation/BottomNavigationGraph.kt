@@ -21,6 +21,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
+import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
@@ -28,10 +30,9 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
 import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
-import ar.edu.utn.frba.mobile.plantscare.ui.viewModels.ProfileViewModel
 
 val MyPlantBaseRoute = "plants/{id}"
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
@@ -53,7 +54,7 @@ fun BottomNavigationGraph(
     navController: NavHostController,
     paddingValues: PaddingValues
 ) {
-    val profileViewModel: ProfileViewModel = viewModel()
+
     NavHost(navController = navController,
         startDestination = Screen.Login.route,
         Modifier.padding(paddingValues)
@@ -63,22 +64,24 @@ fun BottomNavigationGraph(
         composable(route= Screen.NewPlant.route) { NewPlant(navController) }
         composable(route= Screen.Watering.route) { Watering(navController) }
         composable(route= Screen.Guides.route) { Guides(navController) }
-        composable(route= Screen.Profile.route) { Profile(navController, profileUiState = profileViewModel.profileUiState) }
+        composable(route= Screen.Profile.route) {
+            Profile(navController, viewModel<ProfileViewModel>().state)
+        }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")
-            MyPlantInfoView(navController)
+            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+            MyPlantInfoView(viewModel<MyPlantViewModel>().state)
         }
         composable(route= Screen.ImageGallery.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            ImageGallery(navController)
+            ImageGallery(viewModel<MyPlantViewModel>().state)
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            PlantHistory()
+            PlantHistory(viewModel<MyPlantViewModel>().state)
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            WateringFrequency()
+            WateringFrequency(viewModel<MyPlantViewModel>().state)
         }
     }
 }
