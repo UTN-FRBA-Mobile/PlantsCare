@@ -28,7 +28,7 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.PlantHistory
+import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
 import ar.edu.utn.frba.mobile.plantscare.ui.viewModels.ProfileViewModel
@@ -74,7 +74,7 @@ fun BottomNavigationGraph(
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            PlantHistory(navController)
+            PlantHistory()
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
