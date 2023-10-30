@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +31,7 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.newPlant.NewPlant
+import ar.edu.utn.frba.mobile.plantscare.ui.viewModels.ProfileViewModel
 
 val MyPlantBaseRoute = "plants/{id}"
 sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
@@ -51,6 +53,7 @@ fun BottomNavigationGraph(
     navController: NavHostController,
     paddingValues: PaddingValues
 ) {
+    val profileViewModel: ProfileViewModel = viewModel()
     NavHost(navController = navController,
         startDestination = Screen.Login.route,
         Modifier.padding(paddingValues)
@@ -60,7 +63,7 @@ fun BottomNavigationGraph(
         composable(route= Screen.NewPlant.route) { NewPlant(navController) }
         composable(route= Screen.Watering.route) { Watering(navController) }
         composable(route= Screen.Guides.route) { Guides(navController) }
-        composable(route= Screen.Profile.route) { Profile(navController) }
+        composable(route= Screen.Profile.route) { Profile(navController, profileUiState = profileViewModel.profileUiState) }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
             MyPlantInfoView(navController)
