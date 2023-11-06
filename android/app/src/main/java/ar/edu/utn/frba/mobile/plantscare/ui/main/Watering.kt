@@ -44,29 +44,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.model.Plant
+import ar.edu.utn.frba.mobile.plantscare.model.PlantProperties
+import ar.edu.utn.frba.mobile.plantscare.model.WateringData
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
-// Models: Esto despues
-data class mPlant(
-    val name: String,
-    val imageResId: Int,
-    val wateringDays: List<Boolean>
-)
-
-val mmyPlantsList = listOf(
-    Plant("Planta 1", R.drawable.default_plant, listOf(true, false, true, true, false, true, false)),
-    Plant("Planta 2", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 3", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 4", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 5", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 6", R.drawable.default_plant, listOf(true, true, false, false, true, true, true))
-)
-
 @Composable
-fun Watering(navController: NavHostController) {
+fun Watering(navController: NavHostController, state: APICallState<WateringData>) {
+    loadScreen(state) {
+        MyWateringScreen(it)
+    }
+}
+@Composable
+fun MyWateringScreen(wateringData: WateringData) {
     val today = LocalDate.now()
     val allDays = (-7..7).map { today.plusDays(it.toLong()) }
     val rowScrollState = rememberScrollState()
@@ -213,5 +207,25 @@ fun WateringItem()
 @Composable
 @Preview(showBackground = true)
 fun WateringPreview() {
-    Watering(navController = rememberNavController())
+    val exampleData = WateringData(
+        date = LocalDate.now(),
+        plants = listOf(
+            Plant(
+                id = 1,
+                name = "my plant",
+                type = "Hyacinth",
+                description = "Water hyacinth (Eichhornia crassipes) is a fast-growing flowering plant species with ovular, waxy leaves...",
+                currentWateringFrequency = 3,
+                properties = PlantProperties(
+                    size = "SMALL",
+                    environment = "INDOOR",
+                    sunExposure = "HIGH",
+                    difficulty = "HARD"
+                ),
+                imageGallery = listOf("https://i.imgur.com/FioQT6e.jpeg")
+            )
+        )
+    )
+    val successState = APICallState.Success(exampleData)
+    Watering(navController = rememberNavController(), state = successState)
 }
