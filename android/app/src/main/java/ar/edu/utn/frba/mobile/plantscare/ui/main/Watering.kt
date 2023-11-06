@@ -54,13 +54,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Watering(navController: NavHostController, state: APICallState<WateringData>) {
+fun Watering(navController: NavHostController, state: APICallState<List<WateringData>>) {
     loadScreen(state) {
         MyWateringScreen(it)
     }
 }
 @Composable
-fun MyWateringScreen(wateringData: WateringData) {
+fun MyWateringScreen(wateringData: List<WateringData>) {
     val today = LocalDate.now()
     val allDays = (-7..7).map { today.plusDays(it.toLong()) }
     val rowScrollState = rememberScrollState()
@@ -207,22 +207,24 @@ fun WateringItem()
 @Composable
 @Preview(showBackground = true)
 fun WateringPreview() {
-    val exampleData = WateringData(
-        date = LocalDate.now(),
-        plants = listOf(
-            Plant(
-                id = 1,
-                name = "my plant",
-                type = "Hyacinth",
-                description = "Water hyacinth (Eichhornia crassipes) is a fast-growing flowering plant species with ovular, waxy leaves...",
-                currentWateringFrequency = 3,
-                properties = PlantProperties(
-                    size = "SMALL",
-                    environment = "INDOOR",
-                    sunExposure = "HIGH",
-                    difficulty = "HARD"
-                ),
-                imageGallery = listOf("https://i.imgur.com/FioQT6e.jpeg")
+    val exampleData = listOf(
+        WateringData(
+            date = "2023-11-19T00:00:00.000Z",
+            plants = listOf(
+                Plant(
+                    id = 1,
+                    name = "my plant",
+                    type = "Hyacinth",
+                    description = "Water hyacinth (Eichhornia crassipes) is a fast-growing flowering plant species with ovular, waxy leaves...",
+                    currentWateringFrequency = 3,
+                    properties = PlantProperties(
+                        size = "SMALL",
+                        environment = "INDOOR",
+                        sunExposure = "HIGH",
+                        difficulty = "HARD"
+                    ),
+                    imageGallery = listOf("https://i.imgur.com/FioQT6e.jpeg")
+                )
             )
         )
     )
