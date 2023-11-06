@@ -29,6 +29,7 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
+import ar.edu.utn.frba.mobile.plantscare.ui.main.guide.Guide
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
@@ -66,7 +67,9 @@ fun BottomNavigationGraph(
         composable(route= Screen.Watering.route) {
             Watering(navController, viewModel<WateringViewModel>().state)
         }
-        composable(route= Screen.Guides.route) { Guides(navController) }
+        composable(route= Screen.Guides.route) { 
+            Guides(navController)
+        }
         composable(route= Screen.Profile.route) {
             Profile(navController, viewModel<ProfileViewModel>().state)
         }
