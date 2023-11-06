@@ -22,4 +22,7 @@
 
     <!--  Login   -->
     <string name="login_image_content_description">Login image</string>
+
+    <!--    Guide-->
+    <string name="guide_image_header_content_description">Header image</string>
 </resources>

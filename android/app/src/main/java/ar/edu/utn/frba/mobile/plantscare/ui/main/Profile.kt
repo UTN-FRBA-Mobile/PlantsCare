@@ -17,10 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.model.Level
 import ar.edu.utn.frba.mobile.plantscare.model.ProfileData
+import ar.edu.utn.frba.mobile.plantscare.model.Settings
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
@@ -50,33 +53,43 @@ fun ResultScreen(profileData: ProfileData) {
 }
 
 @Composable
-private fun ProfileContent(profileData: ProfileData) {
-  val text = "data"
+fun Header(name: String, experience: Int) {
   val imageModifier = Modifier
     .size(70.dp)
     .background(color = colorPrimaryProfile2)
 
+  Text(text = "Profile")
+  Image(
+    painter = painterResource(id = R.drawable.profile_image),
+    contentDescription = stringResource(id = R.string.profile_image_content_description),
+    modifier = imageModifier
+  )
+  Text(text = "Name: $name")
+  Text(text = "Level: $experience, (Experience Bar), Plants : 48")
+}
+
+@Composable
+fun Body(email: String, location: String, temperatureFormat: String) {
+  ProfileBodyInformationCard("Email: $email")
+  ProfileBodyInformationCard("Location: $location")
+  ProfileBodyInformationCard("Temperature: $temperatureFormat")
+}
+
+@Composable
+private fun ProfileContent(profileData: ProfileData) {
+  val text = "data"
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(20.dp)
   ) {
-    Text(text = "Profile")
-    Image(
-      painter = painterResource(id = R.drawable.profile_image),
-      contentDescription = stringResource(id = R.string.profile_image_content_description),
-      modifier = imageModifier
-    )
-    Text(text = "Name: ${profileData.name}")
-    Text(text = "Level: ${profileData.level.experience}, (Experience Bar), Plants : 48")
-    ProfileCard("Email: ${profileData.email}")
-    ProfileCard("Location: ${profileData.settings.location}")
-    ProfileCard("Temperature: ${profileData.settings.temperatureFormat}")
+    Header(profileData.name, profileData.level.experience)
+    Body(profileData.email, profileData.settings.location, profileData.settings.temperatureFormat)
 //    ProfileCard(text)
   }
 }
 
 @Composable
-private fun ProfileCard(text: String) {
+private fun ProfileBodyInformationCard(text: String) {
   Card(
     backgroundColor = profileCardBackgroundColor,
     modifier = Modifier.size(width = 320.dp, height = 50.dp),
@@ -94,4 +107,23 @@ private fun ProfileCard(text: String) {
       )
     }
   }
+}
+
+@Preview
+@Composable
+fun ResultScreenPreview() {
+  val data: ProfileData = ProfileData(
+    "asd",
+    "asd",
+    "asd",
+    Level(4),
+    Settings("asd", "asd",)
+  )
+  ResultScreen(data)
+}
+
+@Preview
+@Composable
+fun ProfilePreview() {
+  ProfileBodyInformationCard(text = "asdasdasd")
 }

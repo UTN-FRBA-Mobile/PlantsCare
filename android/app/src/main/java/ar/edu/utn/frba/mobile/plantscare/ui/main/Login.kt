@@ -62,7 +62,7 @@ fun LoginButton(navController: NavHostController) {
       )
       Spacer(modifier = Modifier.width(10.dp))
       Text(
-        text = "Sing in with google",
+        text = "Sign in with google",
         fontSize = 20.sp, // Set the font size for the title
         fontWeight = FontWeight.Bold, // Set font weight for bold text
         color = textColor
