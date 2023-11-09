@@ -50,9 +50,21 @@ import ar.edu.utn.frba.mobile.plantscare.model.WateringData
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+fun stringToLocalDate(timestampAsDateString: String): LocalDate? {
+    val format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    return try {
+        val instant = Instant.from(format.parse(timestampAsDateString))
+        instant.atZone(ZoneOffset.UTC).toLocalDate()
+    } catch (e: Exception) {
+        // Handle parsing errors or return null
+        null
+    }
+}
 @Composable
 fun Watering(navController: NavHostController, state: APICallState<List<WateringData>>) {
     loadScreen(state) {
@@ -69,6 +81,12 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
     val columnScrollState = rememberScrollState()
     var selectedDate by remember {
         mutableStateOf(today)
+    }
+    var selectedWateringData by remember {
+        mutableStateOf(wateringData.find{ stringToLocalDate(it.date) == selectedDate })
+    }
+    LaunchedEffect(selectedDate) {
+        selectedWateringData = wateringData.find { stringToLocalDate(it.date) == selectedDate }
     }
 
     Box(
@@ -106,10 +124,13 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
                     .verticalScroll(columnScrollState)
                     .weight(1f)
             ) {
-                WateringItem()
-                WateringItem()
-                WateringItem()
-                WateringItem()
+                if (selectedWateringData?.plants?.isNullOrEmpty() == true){
+                    Text(text = "No hay plantas a regar para ese día")
+                } else {
+                    selectedWateringData?.plants?.forEach { plant ->
+                        WateringItem(plant)
+                    }
+                }
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }
@@ -148,7 +169,7 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
 }
 
 @Composable
-fun WateringItem()
+fun WateringItem(plant: Plant)
 {
     Row (
         modifier = Modifier.fillMaxWidth()
@@ -176,7 +197,7 @@ fun WateringItem()
                         .width(40.dp)
                         .clip(shape = MaterialTheme.shapes.medium)
                 )
-                Text(text = "hola")
+                Text(text = plant.name)
             }
         }
 
