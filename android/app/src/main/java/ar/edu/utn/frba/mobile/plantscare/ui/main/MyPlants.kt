@@ -38,18 +38,19 @@ import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftGreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftRed
 
 data class Plant(
+    val id: Int,
     val name: String,
     val imageResId: Int,
     val wateringDays: List<Boolean>
 )
 
 val myPlantsList = listOf(
-    Plant("Planta 1", R.drawable.default_plant, listOf(true, false, true, true, false, true, false)),
-    Plant("Planta 2", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 3", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 4", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 5", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 6", R.drawable.default_plant, listOf(true, true, false, false, true, true, true))
+    Plant(1, "Planta 1", R.drawable.default_plant, listOf(true, false, true, true, false, true, false)),
+    Plant(2, "Planta 2", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(3, "Planta 3", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(4, "Planta 4", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(5, "Planta 5", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(6, "Planta 6", R.drawable.default_plant, listOf(true, true, false, false, true, true, true))
 )
 
 @Composable
@@ -59,7 +60,7 @@ fun MyPlants(navController: NavHostController) {
         modifier = Modifier.fillMaxSize()
     ) {
         MyPlantsContent {
-            navController.navigate("plants/1/info"){
+            navController.navigate("plants/$it/info"){
                 popUpTo(navController.graph.findStartDestination().id) {
                       saveState = true
                   }
@@ -71,7 +72,7 @@ fun MyPlants(navController: NavHostController) {
 }
 
 @Composable
-fun PlantList(plantsList: List<Plant>, onClickPlant: () -> Unit) {
+fun PlantList(plantsList: List<Plant>, onClickPlant: (id: Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -85,14 +86,14 @@ fun PlantList(plantsList: List<Plant>, onClickPlant: () -> Unit) {
 }
 
 @Composable
-fun PlantItem(plant: Plant, onClickPlant: () -> Unit ) {
+fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(LightGreen50Color)
             .padding(8.dp)
             .clickable {
-                onClickPlant()
+                onClickPlant(plant.id)
             }
     ) {
         Row (
@@ -171,7 +172,7 @@ fun DayOfWeekItem(dayOfWeek: Int, isWatered: Boolean) {
 }
 
 @Composable
-private fun MyPlantsContent(onClickPlant: () -> Unit) {
+private fun MyPlantsContent(onClickPlant: (id: Int) -> Unit) {
     PlantList(myPlantsList, onClickPlant)
 }
 @Composable

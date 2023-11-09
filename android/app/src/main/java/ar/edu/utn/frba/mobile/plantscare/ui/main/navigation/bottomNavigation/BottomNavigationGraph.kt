@@ -29,7 +29,6 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
-import ar.edu.utn.frba.mobile.plantscare.ui.main.guide.Guide
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
@@ -75,19 +74,27 @@ fun BottomNavigationGraph(
         }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
-            MyPlantInfoView(viewModel<MyPlantViewModel>().state)
+            val myPlantViewModel = viewModel<MyPlantViewModel>()
+            myPlantViewModel.setId(id)
+            MyPlantInfoView(myPlantViewModel.state)
         }
         composable(route= Screen.ImageGallery.route) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")
-            ImageGallery(viewModel<MyPlantViewModel>().state)
+            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+            val myPlantViewModel = viewModel<MyPlantViewModel>()
+            myPlantViewModel.setId(id)
+            ImageGallery(myPlantViewModel.state)
         }
         composable(route= Screen.History.route) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")
-            PlantHistory(viewModel<MyPlantViewModel>().state)
+            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+            val myPlantViewModel = viewModel<MyPlantViewModel>()
+            myPlantViewModel.setId(id)
+            PlantHistory(myPlantViewModel.state)
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")
-            WateringFrequency(viewModel<MyPlantViewModel>().state)
+            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+            val myPlantViewModel = viewModel<MyPlantViewModel>()
+            myPlantViewModel.setId(id)
+            WateringFrequency(myPlantViewModel.state)
         }
     }
 }
