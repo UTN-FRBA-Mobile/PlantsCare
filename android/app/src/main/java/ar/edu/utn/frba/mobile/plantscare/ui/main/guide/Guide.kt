@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.profileCardBackgroundColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
@@ -42,37 +43,10 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun Guide(navController: NavHostController) {
+//  loadScreen(profileUiState) {
+//    ResultScreen(it)
+//  }
   ResultScreen()
-}
-
-/**
- * The home screen displaying the loading message.
- */
-@Composable
-fun LoadingScreen() {
-//    Image(
-//        modifier = modifier.size(200.dp),
-//        painter = painterResource(R.drawable.loading_img),
-//        contentDescription = stringResource(R.string.loading)
-//    )
-  Text(text = "LOADING...")
-}
-
-/**
- * The home screen displaying error message with re-attempt button.
- */
-@Composable
-fun ErrorScreen() {
-//    Column(
-//        modifier = modifier,
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
-//        )
-//        Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
-//    }
 }
 
 /**
@@ -193,7 +167,6 @@ fun ArticleView(article: Article) {
   ) {
     item { HeaderImage(article) }
     item { HeaderData(article) }
-
     items(article.blocks.size) { index ->
       val block = article.blocks[index]
       Body(block)
