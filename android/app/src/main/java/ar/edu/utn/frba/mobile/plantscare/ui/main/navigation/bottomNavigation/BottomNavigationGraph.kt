@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
+import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
@@ -62,7 +63,9 @@ fun BottomNavigationGraph(
         composable(route= Screen.Login.route) { Login(navController) }
         composable(route= Screen.MyPlants.route) { MyPlants(navController) }
         composable(route= Screen.NewPlant.route) { NewPlant(navController) }
-        composable(route= Screen.Watering.route) { Watering(navController) }
+        composable(route= Screen.Watering.route) {
+            Watering(navController, viewModel<WateringViewModel>().state)
+        }
         composable(route= Screen.Guides.route) { 
             Guides(navController)
         }
