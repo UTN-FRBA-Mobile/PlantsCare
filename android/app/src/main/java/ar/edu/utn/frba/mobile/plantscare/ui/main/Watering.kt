@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -10,12 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,9 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,8 +45,12 @@ import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.model.Plant
 import ar.edu.utn.frba.mobile.plantscare.model.PlantProperties
 import ar.edu.utn.frba.mobile.plantscare.model.WateringData
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.Blue
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
 import java.time.Instant
 import java.time.LocalDate
@@ -100,7 +102,14 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
                 .background(LightGreen50Color)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp)
         ) {
-            Text(text = "Watering Calendar")
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(text = "Watering Calendar", style = MaterialTheme.typography.subtitle1)
+                Text(text = selectedDate.toString(), style = MaterialTheme.typography.subtitle2)
+            }
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
@@ -115,7 +124,6 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
             }
 
 
-            Text(text = selectedDate.toString())
 
 
             Column (
@@ -144,13 +152,11 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
     val selectedDateText = selectedDate.format(DateTimeFormatter.ofPattern("d"))
     val backgroundColor =
         if (dayText == selectedDateText) {
-            MaterialTheme.colors.primaryVariant
+            DarkGreen500Color
         } else if (dayText == today) {
-            MaterialTheme.colors.primary
-        } else if (dayText.toInt() % 2 == 0) {
-            MaterialTheme.colors.secondary
+            Color(0xFF4C7CAF)
         } else {
-            MaterialTheme.colors.secondaryVariant
+            LightGreen500Color
         }
     Box(
         contentAlignment = Alignment.Center,
@@ -188,16 +194,19 @@ fun WateringItem(plant: Plant)
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.default_plant),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                ImageFromUrl(
+                    url = plant.imageGallery[0],
                     modifier = Modifier
-                        .height(40.dp)
-                        .width(40.dp)
-                        .clip(shape = MaterialTheme.shapes.medium)
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
-                Text(text = plant.name)
+
+                Text(
+                    text = plant.name,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                )
             }
         }
 
@@ -205,12 +214,13 @@ fun WateringItem(plant: Plant)
             modifier = Modifier
                 .size(64.dp)
                 .padding(8.dp)
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
+                .shadow(elevation = 8.dp, CircleShape),
             onClick = {
             },
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.primary,
+                backgroundColor = Blue,
                 contentColor = Color.White
             ),
             contentPadding = PaddingValues(10.dp)
