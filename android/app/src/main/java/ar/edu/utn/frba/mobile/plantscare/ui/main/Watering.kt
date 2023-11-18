@@ -6,6 +6,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,12 +34,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
@@ -78,7 +83,7 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
     val today = LocalDate.now()
     val allDays = (-7..7).map { today.plusDays(it.toLong()) }
     val rowScrollState = rememberScrollState()
-    val sizeInPx = with(LocalDensity.current) { 40.dp.toPx() }.toInt() * 15 / 4
+    val sizeInPx = with(LocalDensity.current) { 40.dp.toPx() }.toInt() * 15 / 4 + 10
     LaunchedEffect(Unit) { rowScrollState.animateScrollTo(sizeInPx)}
     val columnScrollState = rememberScrollState()
     var selectedDate by remember {
@@ -100,41 +105,67 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(LightGreen50Color)
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
         ) {
             Row (
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
-                Text(text = "Watering Calendar", style = MaterialTheme.typography.subtitle1)
-                Text(text = selectedDate.toString(), style = MaterialTheme.typography.subtitle2)
+                Text(
+                    text = "Watering Calendar",
+                    style = MaterialTheme.typography.subtitle1,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = selectedDate.toString(),
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
             }
+
+
             Row(
-                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .horizontalScroll(rowScrollState)
                     .padding(top = 10.dp)
+                    .clip(shape = RoundedCornerShape(10.dp))
             ) {
-                for (day in allDays) {
-                    DayBox(day, selectedDate) {
-                        selectedDate = it
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .horizontalScroll(rowScrollState)
+                ) {
+                    for (day in allDays) {
+                        DayBox(day, selectedDate) {
+                            selectedDate = it
+                        }
                     }
                 }
             }
 
-
-
-
             Column (
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .padding(top = 8.dp)
                     .verticalScroll(columnScrollState)
                     .weight(1f)
+                    .height(IntrinsicSize.Min)
             ) {
                 if (selectedWateringData?.plants?.isNullOrEmpty() == true){
-                    Text(text = "No hay plantas a regar para ese día")
+                    Box(
+                        modifier = Modifier .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No hay plantas a regar para ese día",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(16.dp)
+                        )
+                    }
                 } else {
+                    Spacer(modifier = Modifier.height(8.dp))
                     selectedWateringData?.plants?.forEach { plant ->
                         WateringItem(plant)
                     }
@@ -182,7 +213,7 @@ fun WateringItem(plant: Plant)
     ){
         Card(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(bottom = 16.dp)
                 .weight(1f)
                 .height(125.dp),
             shape = RoundedCornerShape(8.dp),
