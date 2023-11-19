@@ -1,17 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { PlantResponseDto } from '../dtos/PlantResponse.dto';
 import { plainToInstance } from 'class-transformer';
 import { PlantService } from '../providers/Plant.service';
 import { CreatePlantDto } from '../dtos/CreatePlant.dto';
-import { WateringHistory } from '../../watering/model/WateringHistory.entity';
+import { WateringHistoryStatus } from '../../watering/model/WateringHistoryStatus';
+import * as wasi from 'wasi';
+import { differenceInDays, startOfToday } from 'date-fns';
 
 @Controller('/plants')
 export class PlantController {
@@ -19,14 +13,35 @@ export class PlantController {
 
   @Get()
   async getPlants(): Promise<PlantResponseDto[]> {
-    return plainToInstance(PlantResponseDto, await this.plantService.getAll(1));
+    return plainToInstance(
+      PlantResponseDto,
+      await this.plantService.getAll(1),
+    ).map((plant) => this.addNextWatering(plant));
   }
 
   @Get(':id')
   async getPlant(@Param('id') id: number): Promise<PlantResponseDto> {
-    return plainToInstance(
-      PlantResponseDto,
-      await this.plantService.getById(1, Number(id)),
+    return this.addNextWatering(
+      plainToInstance(
+        PlantResponseDto,
+        await this.plantService.getById(1, Number(id)),
+      ),
+    );
+  }
+
+  addNextWatering(plant: PlantResponseDto): PlantResponseDto {
+    return {
+      ...plant,
+      nextWateringInDays: differenceInDays(
+        this.getNextWater(plant).date,
+        startOfToday(),
+      ),
+    };
+  }
+
+  private getNextWater(plant: PlantResponseDto) {
+    return plant.history.find(
+      (history) => history.status === WateringHistoryStatus.NEEDS_WATERING,
     );
   }
 
