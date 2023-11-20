@@ -7,9 +7,22 @@
     <string name="guides_button">Guides</string>
     <string name="profile_button">Profile</string>
 
+    <string name="my_plant_info">My Plant</string>
+    <string name="my_plant_gallery">Gallery</string>
+    <string name="my_plant_history">History</string>
+    <string name="my_plant_frequency">Frequency</string>
+
     <string name="permission_button">Grant permission</string>
 
     <string name="add_plant_camera_button">" Add plant "</string>
     <string name="add_plant_metadata_button">" Add plant "</string>
 
+    <!--  Profile   -->
+    <string name="profile_image_content_description">Profile photo</string>
+
+    <!--  Login   -->
+    <string name="login_image_content_description">Login image</string>
+
+    <!--    Guide-->
+    <string name="guide_image_header_content_description">Header image</string>
 </resources>

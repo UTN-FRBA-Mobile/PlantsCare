@@ -2,6 +2,7 @@ package ar.edu.utn.frba.mobile.plantscare.ui.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
@@ -36,18 +38,19 @@ import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftGreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftRed
 
 data class Plant(
+    val id: Int,
     val name: String,
     val imageResId: Int,
     val wateringDays: List<Boolean>
 )
 
 val myPlantsList = listOf(
-    Plant("Planta 1", R.drawable.default_plant, listOf(true, false, true, true, false, true, false)),
-    Plant("Planta 2", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 3", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 4", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 5", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant("Planta 6", R.drawable.default_plant, listOf(true, true, false, false, true, true, true))
+    Plant(1, "Planta 1", R.drawable.default_plant, listOf(true, false, true, true, false, true, false)),
+    Plant(2, "Planta 2", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(3, "Planta 3", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(4, "Planta 4", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(5, "Planta 5", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
+    Plant(6, "Planta 6", R.drawable.default_plant, listOf(true, true, false, false, true, true, true))
 )
 
 @Composable
@@ -56,36 +59,48 @@ fun MyPlants(navController: NavHostController) {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        ShowPreview()
+        MyPlantsContent {
+            navController.navigate("plants/$it/info"){
+                popUpTo(navController.graph.findStartDestination().id) {
+                      saveState = true
+                  }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
     }
 }
 
 @Composable
-fun PlantList(plantsList: List<Plant>) {
+fun PlantList(plantsList: List<Plant>, onClickPlant: (id: Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         items(plantsList) { plant ->
-            PlantItem(plant)
+            PlantItem(plant, onClickPlant)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
-fun PlantItem(plant: Plant) {
+fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(LightGreen50Color)
             .padding(8.dp)
+            .clickable {
+                onClickPlant(plant.id)
+            }
     ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
+
         ) {
             Image(
                 painter = painterResource(id = plant.imageResId),
@@ -157,7 +172,11 @@ fun DayOfWeekItem(dayOfWeek: Int, isWatered: Boolean) {
 }
 
 @Composable
+private fun MyPlantsContent(onClickPlant: (id: Int) -> Unit) {
+    PlantList(myPlantsList, onClickPlant)
+}
+@Composable
 @Preview
-private fun ShowPreview() {
-    PlantList(plantsList = myPlantsList)
+private fun MyPlantsPreview() {
+    MyPlantsContent {}
 }

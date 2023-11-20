@@ -16,7 +16,17 @@ var navBarBackgroundColor = Color(0xFFFFFFFF)
 
 val SalmonColor = Color(255, 214, 214)
 val SoftGreen = Color(146, 227, 169)
-val SoftRed = Color(254, 129, 129)
 
 val Blue = Color(29, 162, 236)
+
 val SkyBlue = Color(146, 215, 252)
+
+val Grey = Color(191, 191 ,191)
+val SoftRed = Color(254, 129, 129)
+val SoftBlue = Color(178, 235, 242, 255)
+
+val colorPrimaryProfile = Color(229, 249, 219)
+val colorPrimaryProfile2 = Color(0xFFD6FFC2)
+val profileCardBackgroundColor = Color(0xFFF7FFF3)
+val textColor = Color(0xFF59566A)
+val textColorLight = Color(0xFFABAEC1)
