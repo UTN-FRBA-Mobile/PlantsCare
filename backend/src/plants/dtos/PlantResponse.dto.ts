@@ -1,5 +1,5 @@
 import { Exclude, Expose, Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
+import { IsString, ValidateNested } from 'class-validator';
 import { WateringFrequencyDto } from './WateringFrequency.dto';
 import { WateringHistoryDto } from './WateringHistory.dto';
 import { MinimalPlantResponseDto } from './MinimalPlantResponse.dto';
@@ -15,4 +15,8 @@ export class PlantResponseDto extends MinimalPlantResponseDto {
   @Type(() => WateringHistoryDto)
   @ValidateNested({ each: true })
   history: WateringHistoryDto[];
+
+  @Expose()
+  @IsString()
+  nextWateringInDays: number;
 }

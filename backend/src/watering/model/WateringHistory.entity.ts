@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
 import { PersistentObject } from '../../utils/entities/PersistentObject';
 import { WateringHistoryStatus } from './WateringHistoryStatus';
 import { Plant } from '../../plants/model/Plant.entity';
@@ -13,6 +13,9 @@ export class WateringHistory extends PersistentObject {
 
   @ManyToOne(() => Plant, (plant) => plant.history, { onDelete: 'CASCADE' })
   plant: Plant;
+
+  @RelationId((history: WateringHistory) => history.plant)
+  plantId: number;
 
   constructor(
     date: Date,

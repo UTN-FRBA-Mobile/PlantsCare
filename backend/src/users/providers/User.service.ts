@@ -14,7 +14,7 @@ export class UserService {
         experience: 55,
       },
       {
-        temperatureFormat: TemperatureFormat.CELCIUS,
+        temperatureFormat: TemperatureFormat.CELSIUS,
         location: 'Buenos Aires, Caballito',
       },
     );

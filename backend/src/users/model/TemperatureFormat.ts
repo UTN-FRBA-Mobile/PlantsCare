@@ -1,4 +1,4 @@
 export enum TemperatureFormat {
-  FARENHEIT = 'FARENHEIT',
-  CELCIUS = 'CELCIUS',
+  FAHRENHEIT = 'FAHRENHEIT',
+  CELSIUS = 'CELSIUS',
 }
