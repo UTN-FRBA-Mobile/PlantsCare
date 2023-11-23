@@ -2,7 +2,7 @@ package ar.edu.utn.frba.mobile.plantscare.services
 
 import ar.edu.utn.frba.mobile.plantscare.model.WateringData
 import ar.edu.utn.frba.mobile.plantscare.model.WateringRequest
-import okhttp3.ResponseBody
+import ar.edu.utn.frba.mobile.plantscare.model.WateringResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,5 +14,5 @@ interface WateringService {
     suspend fun getWatering() : List<WateringData>
 
     @POST("plants/{plantId}/watering")
-    suspend fun postRequest(@Path("plantId") plantId: Int, @Body body: WateringRequest): Response<ResponseBody>
+    suspend fun postRequest(@Path("plantId") plantId: Int, @Body body: WateringRequest): Response<WateringResponse>
 }

@@ -175,7 +175,7 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
                 } else {
                     Spacer(modifier = Modifier.height(8.dp))
                     selectedWateringData?.plants?.forEach { plant ->
-                        WateringItem(plant, coroutineScope)
+                        WateringItem(plant, coroutineScope, selectedWateringData!!)
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -214,7 +214,7 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
 }
 
 @Composable
-fun WateringItem(plant: Plant, coroutineScope: CoroutineScope)
+fun WateringItem(plant: Plant, coroutineScope: CoroutineScope, selectedWateringData: WateringData)
 {
     Row (
         modifier = Modifier.fillMaxWidth()
@@ -257,7 +257,7 @@ fun WateringItem(plant: Plant, coroutineScope: CoroutineScope)
                 .shadow(elevation = 8.dp, CircleShape),
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
-                    makePostRequest(plant.id)
+                    makePostRequest(plant.id, selectedWateringData)
                 }
             },
             shape = CircleShape,
@@ -278,14 +278,23 @@ fun WateringItem(plant: Plant, coroutineScope: CoroutineScope)
 }
 
 
-private suspend fun makePostRequest(plantId: Int) {
-    val body = WateringRequest(date = "2023-11-06T00:00:00.000Z")
+private suspend fun makePostRequest(plantId: Int, selectedWateringData: WateringData) {
+    val body = WateringRequest(date = selectedWateringData.date)
 
     try {
+        Log.d("myTag", "plantId: $plantId, Body: $body")
         val response = PlantsClient.watering.postRequest(plantId, body)
-        // Handle the response here
-        val myText = response.body()
-        Log.d("myTag", myText.toString())
+
+        if (response.isSuccessful) {
+            // Response is successful, parse the body
+            val wateringResponse = response.body()
+            val status = wateringResponse?.status
+            val date = wateringResponse?.date
+            Log.d("myTag", "Status: $status, Date: $date")
+        } else {
+            // Response is unsuccessful, handle accordingly
+            Log.e("myTag", "Unsuccessful response: ${response.code()}")
+        }
     } catch (e: Exception) {
         // Handle the failure
         Log.e("myTag", e.toString())

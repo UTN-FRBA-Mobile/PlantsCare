@@ -24,3 +24,9 @@ data class Plant(
 data class WateringRequest(
   val date: String
 )
+
+@Serializable
+data class WateringResponse(
+  val status: String,
+  val date: String
+)
