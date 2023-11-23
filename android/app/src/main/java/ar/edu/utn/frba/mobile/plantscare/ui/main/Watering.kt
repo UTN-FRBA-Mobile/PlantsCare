@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -31,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +52,8 @@ import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.model.Plant
 import ar.edu.utn.frba.mobile.plantscare.model.PlantProperties
 import ar.edu.utn.frba.mobile.plantscare.model.WateringData
+import ar.edu.utn.frba.mobile.plantscare.model.WateringRequest
+import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
@@ -57,6 +61,9 @@ import ar.edu.utn.frba.mobile.plantscare.ui.theme.Blue
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -95,6 +102,7 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
     LaunchedEffect(selectedDate) {
         selectedWateringData = wateringData.find { stringToLocalDate(it.date) == selectedDate }
     }
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -167,7 +175,7 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
                 } else {
                     Spacer(modifier = Modifier.height(8.dp))
                     selectedWateringData?.plants?.forEach { plant ->
-                        WateringItem(plant)
+                        WateringItem(plant, coroutineScope)
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -206,7 +214,7 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
 }
 
 @Composable
-fun WateringItem(plant: Plant)
+fun WateringItem(plant: Plant, coroutineScope: CoroutineScope)
 {
     Row (
         modifier = Modifier.fillMaxWidth()
@@ -248,6 +256,9 @@ fun WateringItem(plant: Plant)
                 .align(Alignment.CenterVertically)
                 .shadow(elevation = 8.dp, CircleShape),
             onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    makePostRequest(plant.id)
+                }
             },
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
@@ -265,6 +276,22 @@ fun WateringItem(plant: Plant)
         }
     }
 }
+
+
+private suspend fun makePostRequest(plantId: Int) {
+    val body = WateringRequest(date = "2023-11-06T00:00:00.000Z")
+
+    try {
+        val response = PlantsClient.watering.postRequest(plantId, body)
+        // Handle the response here
+        val myText = response.body()
+        Log.d("myTag", myText.toString())
+    } catch (e: Exception) {
+        // Handle the failure
+        Log.e("myTag", e.toString())
+    }
+}
+
 
 @Composable
 @Preview(showBackground = true)

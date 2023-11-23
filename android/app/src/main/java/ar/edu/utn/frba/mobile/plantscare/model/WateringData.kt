@@ -19,3 +19,8 @@ data class Plant(
   val properties: PlantProperties,
   val imageGallery: List<String>
 )
+
+@Serializable
+data class WateringRequest(
+  val date: String
+)
