@@ -37,7 +37,6 @@ export class Plant extends PersistentObject {
     name: string,
     type: string,
     description: string,
-    properties: PlantProperties,
     currentWateringFrequency: number,
     imageGallery: string[],
     wateringFrequency: WateringFrequency,
@@ -47,9 +46,8 @@ export class Plant extends PersistentObject {
     this.name = name;
     this.type = type;
     this.description = description;
-    this.currentWateringFrequency = currentWateringFrequency;
-    this.properties = properties;
     this.imageGallery = imageGallery;
+    this.currentWateringFrequency = currentWateringFrequency;
     this.wateringFrequency = wateringFrequency;
     this.history = history;
   }

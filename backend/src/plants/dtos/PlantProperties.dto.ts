@@ -1,9 +1,9 @@
-import { Exclude, Expose } from "class-transformer";
-import { IsEnum } from "class-validator";
-import { Environment } from "../model/properties/Environment";
-import { SunExposure } from "../model/properties/SunExposure";
-import { Difficulty } from "../model/properties/Difficulty";
-import { PlantSize } from "../model/properties/PlantSize";
+import { Exclude, Expose } from 'class-transformer';
+import { IsEnum } from 'class-validator';
+import { Environment } from '../model/properties/Environment';
+import { SunExposure } from '../model/properties/SunExposure';
+import { Difficulty } from '../model/properties/Difficulty';
+import { PlantSize } from '../model/properties/PlantSize';
 
 @Exclude()
 export class PlantPropertiesDto {
