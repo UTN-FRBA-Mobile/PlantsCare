@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.mobile.plantscare.model
 
-import android.icu.text.CaseMap.Title
 import kotlinx.serialization.Serializable
 
 
@@ -15,8 +14,3 @@ data class GuidesData(
   val createdAt: String,
 )
 
-@Serializable
-data class Block(
-  val type: String,
-  val value: String,
-)

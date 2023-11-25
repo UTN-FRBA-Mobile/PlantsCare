@@ -35,7 +35,7 @@ fun NewPlant(navController: NavHostController) {
         )
     }
     else {
-        NewPlantMetadata(navController, imageData as ImageProxy)
+        NewPlantImageMetadata(navController, imageData!!)
     }
 }
 

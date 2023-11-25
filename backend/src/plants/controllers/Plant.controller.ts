@@ -51,6 +51,7 @@ export class PlantController {
   addNextWatering(plant: PlantResponseDto): PlantResponseDto {
     return {
       ...plant,
+      status: plant.status,
       nextWateringInDays: differenceInDays(
         this.getNextWater(plant).date,
         startOfToday(),

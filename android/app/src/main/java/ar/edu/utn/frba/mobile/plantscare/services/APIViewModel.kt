@@ -19,25 +19,16 @@ open class APIViewModel<G> : ViewModel() {
       state = APICallState.Loading(null)
       state = try {
         val profileData = apiCall()
-        Log.i("profileData: ", profileData.toString())
+        Log.i("data: ", profileData.toString())
         APICallState.Success(profileData)
       } catch (e: IOException) {
-        Log.e("Error profileData:", e.message?:"")
+        Log.e("Error data:", e.message?:"")
         APICallState.Error(e.message)
       } catch (e: HttpException) {
-        Log.e("Error profileData:", e.message?:"")
+        Log.e("Error data:", e.message?:"")
         APICallState.Error(e.message)
       }
       }
     return state
   }
 }
-
-/*
-private fun getProfile() {
-  launchViewModel{
-    PlantsClient.profile.getProfile()
-  }
-}
-
- */

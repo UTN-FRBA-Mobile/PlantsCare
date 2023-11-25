@@ -11,7 +11,7 @@ class GuideViewModel: APIViewModel<Article>() {
       this.id = id
       Log.i("id al hacer la pegada", "$id")
       this.state = launchViewModel {
-        PlantsClient.guide.getGuideById(id)
+        PlantsClient.guides.getGuideById(id)
       }
     }
   }
