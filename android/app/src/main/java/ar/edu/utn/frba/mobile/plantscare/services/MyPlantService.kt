@@ -18,7 +18,7 @@ interface MyPlantService {
 
     @POST("/plants/{id}/water")
     suspend fun waterPlantById(@Path("id") id: Int) {
-        Log.i("Watered", "Watered plant ${id}")
+        Log.i("Watered", "Watered plant $id")
     }
 
     @Multipart
