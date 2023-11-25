@@ -12,6 +12,8 @@ services:
       - ./.env
     networks:
       - plants
+    volumes:
+      - ./images/plants:/app/images/plants
     logging:
       driver: "json-file"
       options:

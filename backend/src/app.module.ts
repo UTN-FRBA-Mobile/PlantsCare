@@ -5,6 +5,7 @@ import { WateringModule } from './watering/Watering.module';
 import { UserModule } from './users/User.module';
 import { GuideModule } from './guides/Guide.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ImageModule } from './images/Image.module';
 
 const TypeORM = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -20,6 +21,7 @@ const TypeORM = TypeOrmModule.forRoot({
     WateringModule,
     UserModule,
     GuideModule,
+    ImageModule,
   ],
   controllers: [],
   providers: [],

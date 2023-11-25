@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  FileTypeValidator,
+  Get,
+  MaxFileSizeValidator,
+  Param,
+  ParseFilePipe,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { PlantResponseDto } from '../dtos/PlantResponse.dto';
 import { plainToInstance } from 'class-transformer';
 import { PlantService } from '../providers/Plant.service';
@@ -6,6 +19,12 @@ import { CreatePlantDto } from '../dtos/CreatePlant.dto';
 import { WateringHistoryStatus } from '../../watering/model/WateringHistoryStatus';
 import * as wasi from 'wasi';
 import { differenceInDays, startOfToday } from 'date-fns';
+import { PlantPropertiesDto } from '../dtos/PlantProperties.dto';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
+import { PlantMetadataDto } from '../dtos/PlantMetadata.dto';
 
 @Controller('/plants')
 export class PlantController {
@@ -45,13 +64,33 @@ export class PlantController {
     );
   }
 
-  @Post()
-  async createPlant(
-    @Body() plantDto: CreatePlantDto,
+  @Put(':id/properties')
+  async setProperties(
+    @Param('id') id: number,
+    @Body() plantMetadata: PlantMetadataDto,
   ): Promise<PlantResponseDto> {
     return plainToInstance(
       PlantResponseDto,
-      await this.plantService.create(1, plantDto),
+      await this.plantService.setProperties(1, +id, plantMetadata),
+    );
+  }
+
+  @UseInterceptors(FileInterceptor('file'))
+  @Post()
+  async createPlant(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          //new MaxFileSizeValidator({ maxSize: 5000 * 1024 }),
+          new FileTypeValidator({ fileType: 'image/jpeg' }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
+  ): Promise<PlantResponseDto> {
+    return plainToInstance(
+      PlantResponseDto,
+      await this.plantService.create(1, image.path),
     );
   }
 

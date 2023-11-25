@@ -2,7 +2,7 @@ import { Column } from 'typeorm';
 import { SunExposure } from './SunExposure';
 import { Difficulty } from './Difficulty';
 import { Environment } from './Environment';
-import { PlantSize } from "./PlantSize";
+import { PlantSize } from './PlantSize';
 
 export class PlantProperties {
   @Column({ type: 'enum', enum: PlantSize })
