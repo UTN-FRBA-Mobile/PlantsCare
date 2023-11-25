@@ -28,6 +28,7 @@ export class GuideService {
     return this.guidesRepository.save(
       new Guide(
         guideDto.name,
+        guideDto.coverImage,
         guideDto.readingTimeInMinutes,
         guideDto.author,
         guideDto.title,

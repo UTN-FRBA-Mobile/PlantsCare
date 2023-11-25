@@ -39,7 +39,7 @@ COPY --from=build --chown=node:node /app .
 HEALTHCHECK --interval=30s CMD node healthcheck.js
 
 RUN mkdir "logs" && touch "logs/$LOG_FILE.log"
-RUN mkdir -p "images/plants"
+
 
 FROM base as production
 
