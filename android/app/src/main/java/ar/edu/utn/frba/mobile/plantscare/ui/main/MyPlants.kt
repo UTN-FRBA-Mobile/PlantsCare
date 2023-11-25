@@ -128,6 +128,7 @@ fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
                             .height(24.dp)
                             .clip(shape = MaterialTheme.shapes.medium)
                     )
+                    // si es 0 -> Today; si es 1 -> Tomorrow; >1 -> in X days
                     Text(text = "tomorrow", style = MaterialTheme.typography.body1, textAlign = TextAlign.Center)
                 }
             }

@@ -34,7 +34,9 @@ import ar.edu.utn.frba.mobile.plantscare.model.WateringStatus
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.Blue
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.Grey
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SkyBlue
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
 
 @Composable
 fun WateringFrequency(state: APICallState<PlantInfo>) {
@@ -45,7 +47,12 @@ fun WateringFrequency(state: APICallState<PlantInfo>) {
 
 @Composable
 private fun WateringFrequencyTitle(name: String) {
-  Text(text = "Frecuencia de regado semanal de la planta: $name", fontSize = 28.sp)
+  Text(text = "Watering Frequency", fontSize = 24.sp)
+//  Text(text = "Frecuencia de regado semanal de la planta: $name", fontSize = 24.sp)
+  Text(
+    text = "How often is the plant watered? (days)",
+    color = Grey,
+    fontSize = 20.sp)
 }
 
 @Composable
