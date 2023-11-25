@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.services
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,11 +19,13 @@ open class APIViewModel<G> : ViewModel() {
       state = APICallState.Loading(null)
       state = try {
         val profileData = apiCall()
-
+        Log.i("profileData: ", profileData.toString())
         APICallState.Success(profileData)
       } catch (e: IOException) {
+        Log.e("Error profileData:", e.message?:"")
         APICallState.Error(e.message)
       } catch (e: HttpException) {
+        Log.e("Error profileData:", e.message?:"")
         APICallState.Error(e.message)
       }
       }

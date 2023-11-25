@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.filled.WaterDrop
@@ -22,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
+import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
@@ -29,7 +29,6 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
-import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.ImageGallery
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
@@ -45,7 +44,6 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
     object Guides : Screen("guides", R.string.guides_button, Icons.Default.Search)
     object Profile : Screen("profile", R.string.profile_button, Icons.Default.Person)
     object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.EnergySavingsLeaf)
-    object ImageGallery : Screen("${MyPlantBaseRoute}/gallery", R.string.my_plant_gallery, Icons.Default.PhotoLibrary)
     object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.WaterDrop)
     object WateringFrequency : Screen("${MyPlantBaseRoute}/frequency", R.string.my_plant_frequency, Icons.Default.Timeline)
 }
@@ -61,14 +59,14 @@ fun BottomNavigationGraph(
         Modifier.padding(paddingValues)
     ) {
         composable(route= Screen.Login.route) { Login(navController) }
-        composable(route= Screen.MyPlants.route) { MyPlants(navController) }
+        composable(route= Screen.MyPlants.route) {
+            MyPlants(navController, viewModel<MyPlantsViewModel>().state)
+        }
         composable(route= Screen.NewPlant.route) { NewPlant(navController) }
         composable(route= Screen.Watering.route) {
             Watering(navController, viewModel<WateringViewModel>().state)
         }
-        composable(route= Screen.Guides.route) { 
-            Guides(navController)
-        }
+        composable(route= Screen.Guides.route) { Guides(navController) }
         composable(route= Screen.Profile.route) {
             Profile(navController, viewModel<ProfileViewModel>().state)
         }
@@ -77,12 +75,6 @@ fun BottomNavigationGraph(
             val myPlantViewModel = viewModel<MyPlantViewModel>()
             myPlantViewModel.setId(id)
             MyPlantInfoView(myPlantViewModel.state)
-        }
-        composable(route= Screen.ImageGallery.route) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
-            val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
-            ImageGallery(myPlantViewModel.state)
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0

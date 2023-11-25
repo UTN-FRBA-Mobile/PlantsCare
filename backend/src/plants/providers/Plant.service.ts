@@ -8,6 +8,8 @@ import { PlantFactory } from './Plant.factory';
 import { entityWasDeleted } from '../../utils/entities/entityWasDeleted';
 import { addWeeks, startOfToday, startOfWeek } from 'date-fns';
 import { startOfWeekWithOptions } from 'date-fns/fp';
+import { PlantPropertiesDto } from '../dtos/PlantProperties.dto';
+import { PlantMetadataDto } from '../dtos/PlantMetadata.dto';
 
 @Injectable()
 export class PlantService {
@@ -35,9 +37,9 @@ export class PlantService {
       .then((plant) => plant || entityNotFoundError(Plant.name, id));
   }
 
-  async create(userId: number, plantDto: CreatePlantDto): Promise<Plant> {
+  async create(userId: number, path: string): Promise<Plant> {
     return this.plantsRepository.save(
-      await this.plantFactory.createPlant(plantDto),
+      await this.plantFactory.createPlant(path),
     );
   }
 
@@ -46,5 +48,14 @@ export class PlantService {
       .delete(id)
       .then(entityWasDeleted(Plant.name, id))
       .then(() => ({ status: 'deleted' }));
+  }
+
+  async setProperties(
+    userId: number,
+    id: number,
+    { properties, name }: PlantMetadataDto,
+  ): Promise<Plant> {
+    await this.plantsRepository.update(id, { name, properties });
+    return this.getById(userId, id);
   }
 }

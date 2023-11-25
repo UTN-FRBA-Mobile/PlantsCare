@@ -8,18 +8,21 @@ import { WateringHistoryStatus } from '../../watering/model/WateringHistoryStatu
 
 @Injectable()
 export class PlantFactory {
-  async createPlant(plantDto: CreatePlantDto): Promise<Plant> {
+  async createPlant(path: string): Promise<Plant> {
     const plantData = this.generatePlantData();
     return new Plant(
-      plantDto.name,
+      plantData.type,
       plantData.type,
       plantData.description,
-      plantDto.properties,
       plantData.wateringFrequency.november,
-      [plantData.image],
+      [this.createImageUrl(path)],
       plantData.wateringFrequency,
       plantData.history,
     );
+  }
+
+  private createImageUrl(path: string) {
+    return `${process.env.STATIC_CONTENT_URL}/${path}`;
   }
 
   private generatePlantData() {

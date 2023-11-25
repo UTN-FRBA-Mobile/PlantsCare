@@ -8,6 +8,9 @@ export class Guide extends PersistentObject {
   name: string;
 
   @Column()
+  coverImage: string;
+
+  @Column()
   readingTimeInMinutes: number;
 
   @Column()
@@ -23,6 +26,7 @@ export class Guide extends PersistentObject {
   createdAt: Date;
   constructor(
     name: string,
+    coverImage: string,
     readingTimeInMinutes: number,
     author: string,
     title: string,
@@ -30,6 +34,7 @@ export class Guide extends PersistentObject {
   ) {
     super();
     this.name = name;
+    this.coverImage = coverImage;
     this.readingTimeInMinutes = readingTimeInMinutes;
     this.author = author;
     this.title = title;

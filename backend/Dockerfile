@@ -40,6 +40,7 @@ HEALTHCHECK --interval=30s CMD node healthcheck.js
 
 RUN mkdir "logs" && touch "logs/$LOG_FILE.log"
 
+
 FROM base as production
 
 CMD [ "node", "./dist/main.js" ]
