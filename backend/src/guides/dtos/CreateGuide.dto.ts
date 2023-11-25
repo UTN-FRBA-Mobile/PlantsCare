@@ -4,6 +4,7 @@ import {
   IsInt,
   IsPositive,
   IsString,
+  IsUrl,
   ValidateNested,
 } from 'class-validator';
 import { GuideBlockDto } from './GuideBlock.dto';
@@ -13,6 +14,10 @@ export class CreateGuideDto {
   @Expose()
   @IsString()
   name: string;
+
+  @Expose()
+  @IsUrl()
+  coverImage: string;
 
   @Expose()
   @IsPositive()
