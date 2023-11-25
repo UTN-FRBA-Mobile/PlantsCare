@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,19 +14,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
+import ar.edu.utn.frba.mobile.plantscare.model.PlantWateringHistory
 import ar.edu.utn.frba.mobile.plantscare.model.WateringStatus
 import ar.edu.utn.frba.mobile.plantscare.ui.main.stringToLocalDate
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.TextWithTitle
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -89,14 +97,23 @@ private fun ShowPreview(plantInfo: PlantInfo?) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         val status = getStatus(plantInfo)
-                        Text(text = getText(status))
+                        var text by remember { mutableStateOf(getText(status)) }
+                        var image by remember { mutableIntStateOf(getImage(status)) }
+                        val localLifecycleOwner = LocalLifecycleOwner.current
+                        Text(text = text)
                         Image(
-                            painter = painterResource(id = getImage(status)),
-                            contentDescription = "Water",
+                            painter = painterResource(id = image),
+                            contentDescription = text,
                             modifier = Modifier
                                 .height(72.dp)
                                 .width(72.dp)
-                                .clickable { water(plantInfo, status) } ,
+                                .clickable {
+                                    localLifecycleOwner.lifecycleScope.launch {
+                                        water(plantInfo, status)
+                                        text = getText(WateringStatus.WATERED)
+                                        image = getImage(WateringStatus.WATERED)
+                                    }
+                                },
                             contentScale = ContentScale.Crop
                         )
                     }
@@ -107,13 +124,16 @@ private fun ShowPreview(plantInfo: PlantInfo?) {
     }
 }
 
+private fun getHistory(plantInfo: PlantInfo): PlantWateringHistory? {
+    return plantInfo.history.find { stringToLocalDate(it.date) == LocalDate.now() }
+}
 private fun getStatus(plantInfo: PlantInfo): WateringStatus {
-    return plantInfo.history.find { stringToLocalDate(it.date) == LocalDate.now() }?.status ?: WateringStatus.NO_INFO
+    return getHistory(plantInfo)?.status ?: WateringStatus.NO_INFO
 }
 
 private fun getText(status: WateringStatus): String {
     return when(status) {
-        WateringStatus.NEEDS_WATERING -> "Need Water"
+        WateringStatus.NEEDS_WATERING -> "Water"
         WateringStatus.WATERED -> "Watered"
         else -> "Don't need water"
     }
@@ -121,13 +141,13 @@ private fun getText(status: WateringStatus): String {
 
 private fun getImage(status: WateringStatus): Int {
     return when(status) {
-        WateringStatus.NEEDS_WATERING -> R.drawable.waterdrop
+        WateringStatus.NEEDS_WATERING -> R.drawable.sad_plant
         else -> R.drawable.happy_plant
     }
 }
 
-private fun water(plantInfo: PlantInfo, status: WateringStatus) {
+private suspend fun water(plantInfo: PlantInfo, status: WateringStatus) {
     if (status == WateringStatus.NEEDS_WATERING) {
-        Log.i("WATER", "watering plant ${plantInfo.id}")
+//        PlantsClient.myPlant.waterPlantById(plantInfo.id)
     }
 }
