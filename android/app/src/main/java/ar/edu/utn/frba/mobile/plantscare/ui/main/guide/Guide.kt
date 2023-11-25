@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.Grey
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.profileCardBackgroundColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
@@ -67,6 +68,7 @@ fun ResultScreen() {
 
 data class Article(
   val name: String,
+  val coverImage: String,
   val readingTimeMinutes: Int,
   val author: String,
   val createdAt: String,
@@ -101,7 +103,7 @@ fun HeaderImage(article: Article) {
   ) {
     AsyncImage(
       model = ImageRequest.Builder(context = LocalContext.current)
-        .data("https://via.placeholder.com/400")
+        .data("https://howtoculinaryherbgarden.com/wp-content/uploads/2022/06/Groundcover-herbs-1200-750x420.jpg")
         .crossfade(true)
         .build(),
 //    error = painterResource(R.drawable.ic_broken_image),
@@ -144,6 +146,16 @@ fun HeaderData(article: Article) {
 fun Body(block: Block) {
   // Display blocks as paragraphs
   when (block.type) {
+    "SUB_TITLE" -> {
+      Text(
+        text = block.value,
+        fontSize = 24.sp,
+        color = Grey,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(16.dp, 0.dp)
+      )
+    }
+
     "text" -> {
       Text(
         text = block.value,
@@ -153,9 +165,27 @@ fun Body(block: Block) {
         modifier = Modifier.padding(16.dp, 0.dp)
       )
     }
-    // Handle image blocks if needed
-//    "image" -> {}
-    // Add more block types as needed
+
+    "image" -> {
+      Card(
+        backgroundColor = profileCardBackgroundColor,
+        modifier = Modifier
+          .height(150.dp)
+          .padding(16.dp)
+      ) {
+        AsyncImage(
+          model = ImageRequest.Builder(context = LocalContext.current)
+            .data(block.value)
+            .crossfade(true)
+            .build(),
+//    error = painterResource(R.drawable.ic_broken_image),
+//    placeholder = painterResource(R.drawable.loading_img),
+          contentDescription = stringResource(R.string.guide_image_header_content_description),
+          contentScale = ContentScale.Crop
+        )
+      }
+    }
+
   }
 }
 
@@ -182,7 +212,9 @@ fun ArticleScreen() {
     author = "John Doe",
     createdAt = "2023-10-01T03:00:00",
     title = "The art of caring for plants",
+    coverImage = "https://howtoculinaryherbgarden.com/wp-content/uploads/2022/06/Groundcover-herbs-1200-750x420.jpg",
     blocks = listOf(
+      Block(type = "SUB_TITLE", value = "How it Works"),
       Block(type = "text", value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
       Block(
         type = "text",
@@ -192,7 +224,10 @@ fun ArticleScreen() {
         type = "text",
         value = "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
       ),
-      Block(type = "image", value = "url")
+      Block(
+        type = "image",
+        value = "https://howtoculinaryherbgarden.com/wp-content/uploads/2022/05/Roman-Chamomile-Foliage-chg.jpg"
+      )
     )
   )
 
