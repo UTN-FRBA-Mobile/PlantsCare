@@ -16,6 +16,7 @@ export class ImageController {
   getPlantImage(@Param('id') id: string, @Res() res: Response) {
     isAlphanumeric(id) || rethrow(new BadRequestException('invalid image id'));
     const file = createReadStream(`./images/plants/${id}`);
+    res.setHeader('Content-Type', 'image/jpeg');
     file.pipe(res);
   }
 }
