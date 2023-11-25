@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.network
 
-import ar.edu.utn.frba.mobile.plantscare.services.GuideService
+import ar.edu.utn.frba.mobile.plantscare.services.GuidesService
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantService
 import ar.edu.utn.frba.mobile.plantscare.services.ProfileService
 import ar.edu.utn.frba.mobile.plantscare.services.WateringService
@@ -27,7 +27,7 @@ object PlantsClient {
     retrofit.create(WateringService::class.java)
   }
 
-  val guide: GuideService by lazy {
-    retrofit.create(GuideService::class.java)
+  val guides: GuidesService by lazy {
+    retrofit.create(GuidesService::class.java)
   }
 }

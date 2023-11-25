@@ -28,51 +28,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
+import ar.edu.utn.frba.mobile.plantscare.model.WateringStatus
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.Grey
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftGreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.SoftRed
-
-data class Plant(
-    val id: Int,
-    val name: String,
-    val imageResId: Int,
-    val wateringDays: List<Boolean>
-)
-
-val myPlantsList = listOf(
-    Plant(1, "Planta 1", R.drawable.default_plant, listOf(true, false, true, true, false, true, false)),
-    Plant(2, "Planta 2", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant(3, "Planta 3", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant(4, "Planta 4", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant(5, "Planta 5", R.drawable.default_plant, listOf(true, true, false, false, true, true, true)),
-    Plant(6, "Planta 6", R.drawable.default_plant, listOf(true, true, false, false, true, true, true))
-)
+import java.time.LocalDate
 
 @Composable
-fun MyPlants(navController: NavHostController) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        MyPlantsContent {
-            navController.navigate("plants/$it/info"){
-                popUpTo(navController.graph.findStartDestination().id) {
-                      saveState = true
-                  }
-                launchSingleTop = true
-                restoreState = true
+fun MyPlants(navController: NavHostController, state: APICallState<List<PlantInfo>>) {
+    loadScreen(state = state) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            MyPlantsContent(it) {
+                navController.navigate("plants/$it/info"){
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         }
     }
 }
 
 @Composable
-fun PlantList(plantsList: List<Plant>, onClickPlant: (id: Int) -> Unit) {
+fun PlantList(plantsList: List<PlantInfo>, onClickPlant: (id: Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +78,7 @@ fun PlantList(plantsList: List<Plant>, onClickPlant: (id: Int) -> Unit) {
 }
 
 @Composable
-fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
+fun PlantItem(plant: PlantInfo, onClickPlant: (id: Int) -> Unit ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,15 +94,10 @@ fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
                 .height(60.dp)
 
         ) {
-            Image(
-                painter = painterResource(id = plant.imageResId),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(40.dp)
-                    .clip(shape = MaterialTheme.shapes.medium)
-            )
+            ImageFromUrl(url = plant.imageGallery[0], modifier = Modifier
+                .fillMaxHeight()
+                .width(40.dp)
+                .clip(shape = MaterialTheme.shapes.medium))
             Spacer(modifier = Modifier.width(16.dp))
             Column(
                 modifier = Modifier
@@ -137,10 +124,11 @@ fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            plant.wateringDays.forEachIndexed { index, isWatered ->
+            (6 downTo 0).map { index ->
+                val date = LocalDate.now().minusDays(index.toLong())
                 DayOfWeekItem(
-                    dayOfWeek = index + 1,
-                    isWatered = isWatered
+                    date = date,
+                    status = getStatus(plant, date)
                 )
             }
         }
@@ -148,9 +136,8 @@ fun PlantItem(plant: Plant, onClickPlant: (id: Int) -> Unit ) {
 }
 
 @Composable
-fun DayOfWeekItem(dayOfWeek: Int, isWatered: Boolean) {
-    val dayLetters = listOf("S", "M", "T", "W", "T", "F", "S")
-    val dayLetter = dayLetters[dayOfWeek - 1]
+fun DayOfWeekItem(date: LocalDate, status: WateringStatus) {
+    val dayLetter: String = date.dayOfWeek.name[0].toString()
 
     Column(
         modifier = Modifier
@@ -160,7 +147,7 @@ fun DayOfWeekItem(dayOfWeek: Int, isWatered: Boolean) {
         Box(
             modifier = Modifier
                 .size(20.dp)
-                .background(if (isWatered) SoftGreen else SoftRed, shape = CircleShape)
+                .background(getColor(status), shape = CircleShape)
                 .clip(CircleShape),
             contentAlignment = Alignment.Center
         ) {
@@ -173,11 +160,19 @@ fun DayOfWeekItem(dayOfWeek: Int, isWatered: Boolean) {
 }
 
 @Composable
-private fun MyPlantsContent(onClickPlant: (id: Int) -> Unit) {
+private fun MyPlantsContent(myPlantsList: List<PlantInfo> ,onClickPlant: (id: Int) -> Unit) {
     PlantList(myPlantsList, onClickPlant)
 }
-@Composable
-@Preview
-private fun MyPlantsPreview() {
-    MyPlantsContent {}
+
+private fun getColor(status: WateringStatus): Color {
+    return when(status) {
+        WateringStatus.WATERED -> SoftGreen
+        WateringStatus.NOT_WATERED -> SoftRed
+        WateringStatus.NEEDS_WATERING -> SoftRed
+        else -> Grey
+    }
+}
+
+private fun getStatus(plantInfo: PlantInfo, date: LocalDate): WateringStatus {
+    return plantInfo.history.find { stringToLocalDate(it.date) == date }?.status ?: WateringStatus.NO_INFO
 }

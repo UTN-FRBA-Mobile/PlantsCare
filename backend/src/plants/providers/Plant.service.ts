@@ -31,7 +31,12 @@ export class PlantService {
   async getById(userId: number, id: number): Promise<Plant> {
     return this.plantsRepository
       .findOne({
-        where: { id },
+        where: {
+          id,
+          history: {
+            date: Between(startOfToday(), addWeeks(startOfToday(), 1)),
+          },
+        },
         relations: ['history', 'wateringFrequency'],
       })
       .then((plant) => plant || entityNotFoundError(Plant.name, id));

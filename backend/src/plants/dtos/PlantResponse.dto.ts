@@ -1,8 +1,9 @@
 import { Exclude, Expose, Type } from 'class-transformer';
-import { IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsString, ValidateNested } from 'class-validator';
 import { WateringFrequencyDto } from './WateringFrequency.dto';
 import { WateringHistoryDto } from './WateringHistory.dto';
 import { MinimalPlantResponseDto } from './MinimalPlantResponse.dto';
+import { WateringHistoryStatus } from '../../watering/model/WateringHistoryStatus';
 
 @Exclude()
 export class PlantResponseDto extends MinimalPlantResponseDto {
@@ -10,6 +11,10 @@ export class PlantResponseDto extends MinimalPlantResponseDto {
   @Type(() => WateringFrequencyDto)
   @ValidateNested()
   wateringFrequency: WateringFrequencyDto;
+
+  @Expose()
+  @IsEnum(WateringHistoryStatus)
+  status: WateringHistoryStatus;
 
   @Expose()
   @Type(() => WateringHistoryDto)
