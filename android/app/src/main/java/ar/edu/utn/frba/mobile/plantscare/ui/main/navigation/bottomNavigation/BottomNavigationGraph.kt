@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.services.GuidesViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
@@ -67,7 +68,7 @@ fun BottomNavigationGraph(
             Watering(navController, viewModel<WateringViewModel>().state)
         }
         composable(route= Screen.Guides.route) { 
-            Guides(navController)
+            Guides(navController, viewModel<GuidesViewModel>().state)
         }
         composable(route= Screen.Profile.route) {
             Profile(navController, viewModel<ProfileViewModel>().state)

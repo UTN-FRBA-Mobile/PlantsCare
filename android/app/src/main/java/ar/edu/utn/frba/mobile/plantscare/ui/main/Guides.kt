@@ -29,6 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.model.GuidesData
+import ar.edu.utn.frba.mobile.plantscare.model.WateringData
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
 
 data class PlantGuide(
@@ -51,15 +55,22 @@ val myPlantGuidesList = listOf(
 )
 
 @Composable
-fun Guides(navController: NavHostController) {
+fun Guides(navController: NavHostController, state: APICallState<List<GuidesData>>) {
+    loadScreen(state = state) {
+        MyGuidesScreen(it)
+    }
+}
+
+@Composable
+fun MyGuidesScreen(guidesData: List<GuidesData>) {
+    println(guidesData)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        SearchAndItemList(items = myPlantGuidesList)
+        SearchAndItemList(items = guidesData.map { PlantGuide(it.name, R.drawable.default_guide, it.readingTimeInMinutes) })
     }
 }
-
 
 @Composable
 fun SearchAndItemList(items : List<PlantGuide>) {
