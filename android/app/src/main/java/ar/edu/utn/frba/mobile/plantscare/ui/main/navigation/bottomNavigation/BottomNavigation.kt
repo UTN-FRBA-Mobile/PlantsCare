@@ -32,7 +32,6 @@ val mainBottomNavigationItems = listOf(
 
 val myPlantNavigationItems = listOf(
     Screen.MyPlantInfo,
-    Screen.ImageGallery,
     Screen.History,
     Screen.WateringFrequency,
 )
