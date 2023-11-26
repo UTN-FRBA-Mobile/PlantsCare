@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
@@ -54,6 +55,7 @@ import ar.edu.utn.frba.mobile.plantscare.model.PlantProperties
 import ar.edu.utn.frba.mobile.plantscare.model.WateringData
 import ar.edu.utn.frba.mobile.plantscare.model.WateringRequest
 import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
+import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
@@ -81,12 +83,19 @@ fun stringToLocalDate(timestampAsDateString: String): LocalDate? {
 }
 @Composable
 fun Watering(navController: NavHostController, state: APICallState<List<WateringData>>) {
+    val viewModel: WateringViewModel = viewModel()
     loadScreen(state) {
         MyWateringScreen(it)
+    }
+    LaunchedEffect(Unit) {
+        viewModel.refreshData()
     }
 }
 @Composable
 fun MyWateringScreen(wateringData: List<WateringData>) {
+    // State to hold the current watering data
+    var wateringData by remember { mutableStateOf(wateringData) }
+
     val today = LocalDate.now()
     val allDays = (-7..7).map { today.plusDays(it.toLong()) }
     val rowScrollState = rememberScrollState()
@@ -99,10 +108,22 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
     var selectedWateringData by remember {
         mutableStateOf(wateringData.find{ stringToLocalDate(it.date) == selectedDate })
     }
-    LaunchedEffect(selectedDate) {
+    LaunchedEffect(selectedDate, wateringData) {
         selectedWateringData = wateringData.find { stringToLocalDate(it.date) == selectedDate }
     }
     val coroutineScope = rememberCoroutineScope()
+
+    // Function to update watering data
+    fun updateWateringData(plantId: Int, selectedDate: LocalDate) {
+        wateringData = wateringData.map { watering ->
+            if (stringToLocalDate(watering.date) == selectedDate) {
+                val updatedPlants = watering.plants.filter { it.id != plantId }
+                watering.copy(plants = updatedPlants)
+            } else {
+                watering
+            }
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -160,13 +181,13 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
                     .weight(1f)
                     .height(IntrinsicSize.Min)
             ) {
-                if (selectedWateringData?.plants?.isNullOrEmpty() == true){
+                if (selectedWateringData == null || selectedWateringData?.plants?.isNullOrEmpty() == true){
                     Box(
                         modifier = Modifier .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No hay plantas a regar para ese día",
+                            text = "There are no plants to water this day",
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .padding(16.dp)
@@ -175,7 +196,9 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
                 } else {
                     Spacer(modifier = Modifier.height(8.dp))
                     selectedWateringData?.plants?.forEach { plant ->
-                        WateringItem(plant, coroutineScope, selectedWateringData!!)
+                        WateringItem(plant, coroutineScope, selectedWateringData!!){ plantId, selectedDate ->
+                            updateWateringData(plantId, selectedDate)
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -214,7 +237,7 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
 }
 
 @Composable
-fun WateringItem(plant: Plant, coroutineScope: CoroutineScope, selectedWateringData: WateringData)
+fun WateringItem(plant: Plant, coroutineScope: CoroutineScope, selectedWateringData: WateringData, onUpdateWateringData: (Int, LocalDate) -> Unit )
 {
     Row (
         modifier = Modifier.fillMaxWidth()
@@ -257,7 +280,9 @@ fun WateringItem(plant: Plant, coroutineScope: CoroutineScope, selectedWateringD
                 .shadow(elevation = 8.dp, CircleShape),
             onClick = {
                 coroutineScope.launch(Dispatchers.IO) {
-                    makePostRequest(plant.id, selectedWateringData)
+                    makePostRequest(plant.id, selectedWateringData){ plantId, selectedDate ->
+                        onUpdateWateringData(plantId, selectedDate)
+                    }
                 }
             },
             shape = CircleShape,
@@ -278,12 +303,12 @@ fun WateringItem(plant: Plant, coroutineScope: CoroutineScope, selectedWateringD
 }
 
 
-private suspend fun makePostRequest(plantId: Int, selectedWateringData: WateringData) {
+private suspend fun makePostRequest(plantId: Int, selectedWateringData: WateringData, onUpdateWateringData: (Int, LocalDate) -> Unit) {
     val body = WateringRequest(date = selectedWateringData.date)
 
     try {
         Log.d("myTag", "plantId: $plantId, Body: $body")
-        val response = PlantsClient.watering.postRequest(plantId, body)
+         val response = PlantsClient.watering.postRequest(plantId, body)
 
         if (response.isSuccessful) {
             // Response is successful, parse the body
@@ -291,6 +316,12 @@ private suspend fun makePostRequest(plantId: Int, selectedWateringData: Watering
             val status = wateringResponse?.status
             val date = wateringResponse?.date
             Log.d("myTag", "Status: $status, Date: $date")
+
+            // Actualizo el wateringData para que muestre los cambios
+            stringToLocalDate(selectedWateringData.date)?.let {
+                onUpdateWateringData(plantId, it)
+            }
+
         } else {
             // Response is unsuccessful, handle accordingly
             Log.e("myTag", "Unsuccessful response: ${response.code()}")
