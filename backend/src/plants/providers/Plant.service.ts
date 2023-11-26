@@ -6,9 +6,14 @@ import { entityNotFoundError } from '../../utils/entities/entityNotFoundError';
 import { CreatePlantDto } from '../dtos/CreatePlant.dto';
 import { PlantFactory } from './Plant.factory';
 import { entityWasDeleted } from '../../utils/entities/entityWasDeleted';
-import { addWeeks, startOfToday, startOfWeek } from 'date-fns';
-import { startOfWeekWithOptions } from 'date-fns/fp';
-import { PlantPropertiesDto } from '../dtos/PlantProperties.dto';
+import {
+  addWeeks,
+  endOfMonth,
+  startOfMonth,
+  startOfToday,
+  startOfWeek,
+  subWeeks,
+} from 'date-fns';
 import { PlantMetadataDto } from '../dtos/PlantMetadata.dto';
 
 @Injectable()
@@ -22,7 +27,10 @@ export class PlantService {
     return this.plantsRepository.find({
       where: {
         history: {
-          date: Between(startOfToday(), addWeeks(startOfToday(), 1)),
+          date: Between(
+            subWeeks(startOfToday(), 1),
+            addWeeks(startOfToday(), 1),
+          ),
         },
       },
       relations: ['history'],
@@ -31,7 +39,15 @@ export class PlantService {
   async getById(userId: number, id: number): Promise<Plant> {
     return this.plantsRepository
       .findOne({
-        where: { id },
+        where: {
+          id,
+          history: {
+            date: Between(
+              startOfMonth(startOfToday()),
+              endOfMonth(startOfToday()),
+            ),
+          },
+        },
         relations: ['history', 'wateringFrequency'],
       })
       .then((plant) => plant || entityNotFoundError(Plant.name, id));
