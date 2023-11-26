@@ -51,15 +51,20 @@ fun MyPlants(navController: NavHostController, state: APICallState<List<PlantInf
             modifier = Modifier.fillMaxSize()
         ) {
             MyPlantsContent(it) {
-                navController.navigate("plants/$it/info"){
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navigateToMyPlant(navController, it)
             }
         }
+    }
+}
+
+
+fun navigateToMyPlant(navController: NavHostController, id: Int) {
+    navController.navigate("plants/$id/info") {
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 

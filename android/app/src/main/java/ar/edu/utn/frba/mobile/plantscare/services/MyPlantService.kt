@@ -1,10 +1,13 @@
 package ar.edu.utn.frba.mobile.plantscare.services
 
 import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
+import ar.edu.utn.frba.mobile.plantscare.model.SimplePlantInfo
 import okhttp3.MultipartBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -18,5 +21,10 @@ interface MyPlantService {
     @Multipart
     @POST("plants")
     suspend fun createPlant(@Part imageFile: MultipartBody.Part): PlantInfo
+
+    @PUT("plants/{id}/properties")
+    suspend fun updatePlant(@Path("id") id: Int, @Body plantMetadata: SimplePlantInfo): PlantInfo
+
+
 
 }

@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
 import ar.edu.utn.frba.mobile.plantscare.services.GuidesViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
@@ -76,19 +77,25 @@ fun BottomNavigationGraph(
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
             val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
+            myPlantViewModel.setId(id) {
+                PlantsClient.myPlant.getPlantById(it)
+            }
             MyPlantInfoView(myPlantViewModel.state)
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
             val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
+            myPlantViewModel.setId(id) {
+                PlantsClient.myPlant.getPlantById(it)
+            }
             PlantHistory(myPlantViewModel.state)
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
             val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
+            myPlantViewModel.setId(id) {
+                PlantsClient.myPlant.getPlantById(it)
+            }
             WateringFrequency(myPlantViewModel.state)
         }
     }

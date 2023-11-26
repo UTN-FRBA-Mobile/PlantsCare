@@ -9,11 +9,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.WhiteColor
 
 @Composable
-fun AddButton(onClick: () -> Unit, @StringRes textButton: Int){
+fun AddButton( onClick: () -> Unit, @StringRes textButton: Int){
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = WhiteColor, contentColor = LightGreen500Color)
@@ -24,3 +26,9 @@ fun AddButton(onClick: () -> Unit, @StringRes textButton: Int){
     }
 }
 
+
+@Preview
+@Composable
+fun AddButtonPreview() {
+    AddButton(onClick = { }, textButton = R.string.add_plant_metadata_button)
+}
