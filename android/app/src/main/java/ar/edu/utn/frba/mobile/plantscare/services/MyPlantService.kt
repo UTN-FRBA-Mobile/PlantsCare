@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.services
 
+import android.util.Log
 import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
 import ar.edu.utn.frba.mobile.plantscare.model.SimplePlantInfo
 import okhttp3.MultipartBody
@@ -17,6 +18,11 @@ interface MyPlantService {
 
     @GET("plants")
     suspend fun getPlants(): List<PlantInfo>
+
+    @POST("/plants/{id}/water")
+    suspend fun waterPlantById(@Path("id") id: Int) {
+        Log.i("Watered", "Watered plant $id")
+    }
 
     @Multipart
     @POST("plants")

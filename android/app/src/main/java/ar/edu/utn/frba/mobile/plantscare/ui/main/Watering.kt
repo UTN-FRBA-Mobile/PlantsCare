@@ -1,21 +1,22 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main
 
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,25 +32,40 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.model.Plant
 import ar.edu.utn.frba.mobile.plantscare.model.PlantProperties
 import ar.edu.utn.frba.mobile.plantscare.model.WateringData
+import ar.edu.utn.frba.mobile.plantscare.model.WateringRequest
+import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
+import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.Blue
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.DarkGreen500Color
+import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen500Color
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -67,16 +83,23 @@ fun stringToLocalDate(timestampAsDateString: String): LocalDate? {
 }
 @Composable
 fun Watering(navController: NavHostController, state: APICallState<List<WateringData>>) {
+    val viewModel: WateringViewModel = viewModel()
     loadScreen(state) {
         MyWateringScreen(it)
+    }
+    LaunchedEffect(Unit) {
+        viewModel.refreshData()
     }
 }
 @Composable
 fun MyWateringScreen(wateringData: List<WateringData>) {
+    // State to hold the current watering data
+    var wateringData by remember { mutableStateOf(wateringData) }
+
     val today = LocalDate.now()
     val allDays = (-7..7).map { today.plusDays(it.toLong()) }
     val rowScrollState = rememberScrollState()
-    val sizeInPx = with(LocalDensity.current) { 40.dp.toPx() }.toInt() * 15 / 4
+    val sizeInPx = with(LocalDensity.current) { 40.dp.toPx() }.toInt() * 15 / 4 + 10
     LaunchedEffect(Unit) { rowScrollState.animateScrollTo(sizeInPx)}
     val columnScrollState = rememberScrollState()
     var selectedDate by remember {
@@ -85,8 +108,21 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
     var selectedWateringData by remember {
         mutableStateOf(wateringData.find{ stringToLocalDate(it.date) == selectedDate })
     }
-    LaunchedEffect(selectedDate) {
+    LaunchedEffect(selectedDate, wateringData) {
         selectedWateringData = wateringData.find { stringToLocalDate(it.date) == selectedDate }
+    }
+    val coroutineScope = rememberCoroutineScope()
+
+    // Function to update watering data
+    fun updateWateringData(plantId: Int, selectedDate: LocalDate) {
+        wateringData = wateringData.map { watering ->
+            if (stringToLocalDate(watering.date) == selectedDate) {
+                val updatedPlants = watering.plants.filter { it.id != plantId }
+                watering.copy(plants = updatedPlants)
+            } else {
+                watering
+            }
+        }
     }
 
     Box(
@@ -98,37 +134,71 @@ fun MyWateringScreen(wateringData: List<WateringData>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(LightGreen50Color)
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
         ) {
-            Text(text = "Watering Calendar")
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(
+                    text = "Watering Calendar",
+                    style = MaterialTheme.typography.subtitle1,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = selectedDate.toString(),
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+
+
             Row(
-                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .horizontalScroll(rowScrollState)
                     .padding(top = 10.dp)
+                    .clip(shape = RoundedCornerShape(10.dp))
             ) {
-                for (day in allDays) {
-                    DayBox(day, selectedDate) {
-                        selectedDate = it
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .horizontalScroll(rowScrollState)
+                ) {
+                    for (day in allDays) {
+                        DayBox(day, selectedDate) {
+                            selectedDate = it
+                        }
                     }
                 }
             }
 
-
-            Text(text = selectedDate.toString())
-
-
             Column (
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .padding(top = 8.dp)
                     .verticalScroll(columnScrollState)
                     .weight(1f)
+                    .height(IntrinsicSize.Min)
             ) {
-                if (selectedWateringData?.plants?.isNullOrEmpty() == true){
-                    Text(text = "No hay plantas a regar para ese día")
+                if (selectedWateringData == null || selectedWateringData?.plants?.isNullOrEmpty() == true){
+                    Box(
+                        modifier = Modifier .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "There are no plants to water this day",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(16.dp)
+                        )
+                    }
                 } else {
+                    Spacer(modifier = Modifier.height(8.dp))
                     selectedWateringData?.plants?.forEach { plant ->
-                        WateringItem(plant)
+                        WateringItem(plant, coroutineScope, selectedWateringData!!){ plantId, selectedDate ->
+                            updateWateringData(plantId, selectedDate)
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -144,13 +214,11 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
     val selectedDateText = selectedDate.format(DateTimeFormatter.ofPattern("d"))
     val backgroundColor =
         if (dayText == selectedDateText) {
-            MaterialTheme.colors.primaryVariant
+            DarkGreen500Color
         } else if (dayText == today) {
-            MaterialTheme.colors.primary
-        } else if (dayText.toInt() % 2 == 0) {
-            MaterialTheme.colors.secondary
+            Color(0xFF4C7CAF)
         } else {
-            MaterialTheme.colors.secondaryVariant
+            LightGreen500Color
         }
     Box(
         contentAlignment = Alignment.Center,
@@ -169,14 +237,14 @@ fun DayBox(day: LocalDate, selectedDate: LocalDate, onDateSelected: (LocalDate) 
 }
 
 @Composable
-fun WateringItem(plant: Plant)
+fun WateringItem(plant: Plant, coroutineScope: CoroutineScope, selectedWateringData: WateringData, onUpdateWateringData: (Int, LocalDate) -> Unit )
 {
     Row (
         modifier = Modifier.fillMaxWidth()
     ){
         Card(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(bottom = 16.dp)
                 .weight(1f)
                 .height(125.dp),
             shape = RoundedCornerShape(8.dp),
@@ -188,16 +256,19 @@ fun WateringItem(plant: Plant)
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.default_plant),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                ImageFromUrl(
+                    url = plant.imageGallery[0],
                     modifier = Modifier
-                        .height(40.dp)
-                        .width(40.dp)
-                        .clip(shape = MaterialTheme.shapes.medium)
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
-                Text(text = plant.name)
+
+                Text(
+                    text = plant.name,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                )
             }
         }
 
@@ -205,12 +276,18 @@ fun WateringItem(plant: Plant)
             modifier = Modifier
                 .size(64.dp)
                 .padding(8.dp)
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
+                .shadow(elevation = 8.dp, CircleShape),
             onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    makePostRequest(plant.id, selectedWateringData){ plantId, selectedDate ->
+                        onUpdateWateringData(plantId, selectedDate)
+                    }
+                }
             },
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.primary,
+                backgroundColor = Blue,
                 contentColor = Color.White
             ),
             contentPadding = PaddingValues(10.dp)
@@ -224,6 +301,37 @@ fun WateringItem(plant: Plant)
         }
     }
 }
+
+
+private suspend fun makePostRequest(plantId: Int, selectedWateringData: WateringData, onUpdateWateringData: (Int, LocalDate) -> Unit) {
+    val body = WateringRequest(date = selectedWateringData.date)
+
+    try {
+        Log.d("myTag", "plantId: $plantId, Body: $body")
+         val response = PlantsClient.watering.postRequest(plantId, body)
+
+        if (response.isSuccessful) {
+            // Response is successful, parse the body
+            val wateringResponse = response.body()
+            val status = wateringResponse?.status
+            val date = wateringResponse?.date
+            Log.d("myTag", "Status: $status, Date: $date")
+
+            // Actualizo el wateringData para que muestre los cambios
+            stringToLocalDate(selectedWateringData.date)?.let {
+                onUpdateWateringData(plantId, it)
+            }
+
+        } else {
+            // Response is unsuccessful, handle accordingly
+            Log.e("myTag", "Unsuccessful response: ${response.code()}")
+        }
+    } catch (e: Exception) {
+        // Handle the failure
+        Log.e("myTag", e.toString())
+    }
+}
+
 
 @Composable
 @Preview(showBackground = true)
