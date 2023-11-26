@@ -25,4 +25,6 @@
 
     <!--    Guide-->
     <string name="guide_image_header_content_description">Header image</string>
+    <string name="web_client_id">132857721549-4r77mbmppc0j43t4khr7fn7rkt0919j1.apps.googleusercontent.com</string>
+
 </resources>

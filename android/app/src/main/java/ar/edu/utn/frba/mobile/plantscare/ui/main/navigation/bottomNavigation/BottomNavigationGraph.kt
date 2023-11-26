@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -27,10 +28,11 @@ import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
-import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.GoogleAuthUiClient
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.LoginScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
@@ -53,14 +55,16 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
 @Composable
 fun BottomNavigationGraph(
     navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    auth: GoogleAuthUiClient,
+    context: Context
 ) {
 
     NavHost(navController = navController,
         startDestination = Screen.Login.route,
         Modifier.padding(paddingValues)
     ) {
-        composable(route= Screen.Login.route) { Login(navController) }
+        composable(route= Screen.Login.route) { LoginScreen(navController, auth, context) }
         composable(route= Screen.MyPlants.route) {
             MyPlants(navController, viewModel<MyPlantsViewModel>().state)
         }
