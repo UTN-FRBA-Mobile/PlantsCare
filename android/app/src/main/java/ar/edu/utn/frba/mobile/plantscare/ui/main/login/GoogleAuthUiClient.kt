@@ -1,9 +1,11 @@
-package ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn
+package ar.edu.utn.frba.mobile.plantscare.ui.main.login
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.SignInResult
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.UserData
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -40,10 +42,12 @@ class GoogleAuthUiClient(
             val user = auth.signInWithCredential(googleCredentials).await().user
             SignInResult(
                 data = user?.run {
+
                     UserData(
+                        email = email!!,
                         userId = uid,
-                        username = displayName,
-                        profilePictureUrl = photoUrl?.toString()
+                        username = displayName!!,
+                        profilePictureUrl = photoUrl?.toString()!!
                     )
                 },
                 errorMessage = null
@@ -71,8 +75,9 @@ class GoogleAuthUiClient(
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
-            username = displayName,
-            profilePictureUrl = photoUrl?.toString()
+            username = displayName!!,
+            email = email!!,
+            profilePictureUrl = photoUrl?.toString()!!
         )
     }
 

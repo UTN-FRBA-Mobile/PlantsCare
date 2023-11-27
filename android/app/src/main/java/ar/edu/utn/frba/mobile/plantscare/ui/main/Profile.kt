@@ -1,9 +1,7 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main
 
-import android.Manifest
-import android.content.Context
-import android.location.Location
-import androidx.compose.foundation.Image
+import android.location.Address
+import android.location.Geocoder
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,50 +18,46 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavHostController
-import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.live.data.LocationDetails
 import ar.edu.utn.frba.mobile.plantscare.model.Level
 import ar.edu.utn.frba.mobile.plantscare.model.ProfileData
 import ar.edu.utn.frba.mobile.plantscare.model.Settings
-import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
-import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.GoogleAuthUiClient
+import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation.Screen
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.profileCardBackgroundColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColorLight
-import androidx.compose.runtime.*
-import android.location.Address
-import android.location.Geocoder
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.LiveData
-import ar.edu.utn.frba.mobile.plantscare.live.data.LocationDetails
-import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
-import androidx.compose.runtime.livedata.observeAsState
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
-fun Profile(navController: NavHostController, profileUiState: APICallState<ProfileData>, applicationViewModel: ApplicationViewModel) {
-  loadScreen(profileUiState) {
-    ResultScreen(it, applicationViewModel)
-  }
+fun Profile(auth: GoogleAuthUiClient, navController: NavHostController,applicationViewModel: ApplicationViewModel) {
+    ResultScreen(auth, navController, applicationViewModel)
 }
 
 /**
  * ResultScreen displaying number of photos retrieved.
  */
 @Composable
-fun ResultScreen(profileData: ProfileData, applicationViewModel: ApplicationViewModel) {
-
+fun ResultScreen(auth: GoogleAuthUiClient, navController: NavHostController, applicationViewModel: ApplicationViewModel) {
 
 //val a: LocationLiveData = applicationViewModel.
   val locationLiveData: LiveData<LocationDetails> = applicationViewModel.getLocationLiveData()
@@ -84,15 +78,15 @@ fun ResultScreen(profileData: ProfileData, applicationViewModel: ApplicationView
             .background(Color.White)
             .padding(32.dp)
         ) {
-          ProfileContent(profileData, result)
+          ProfileContent(auth, navController, result)
         }
       }
   }
 }
 
 @Composable
-fun Header(name: String, experience: Int) {
-  val imageModifier = Modifier.size(70.dp)
+fun Header(name: String, profileImageUrl: String) {
+  val imageModifier = Modifier.size(140.dp).clip(RoundedCornerShape(20.dp))
 
   Card(
     backgroundColor = colorPrimaryProfile2,
@@ -106,27 +100,14 @@ fun Header(name: String, experience: Int) {
       verticalArrangement = Arrangement.SpaceEvenly,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Text(
-        text = "Name: $name",
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Medium,
-        color = textColor
-      )
-      Image(
-        painter = painterResource(id = R.drawable.profile_image),
-        contentDescription = stringResource(id = R.string.profile_image_content_description),
-        modifier = imageModifier
+      ImageFromUrl(
+         url = profileImageUrl,
+         modifier = imageModifier
       )
       Text(
         text = name,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold,
-        color = textColor
-      )
-      Text(
-        text = "Level: $experience, (Experience Bar), Plants : 48",
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Medium,
         color = textColor
       )
     }
@@ -141,27 +122,19 @@ fun Body(email: String, location: String, temperatureFormat: String) {
 }
 
 @Composable
-fun Footer() {
+fun Footer(auth: GoogleAuthUiClient, navController: NavHostController) {
+  val coroutineScope = rememberCoroutineScope()
   Row(
-    horizontalArrangement = Arrangement.SpaceBetween,
+    horizontalArrangement = Arrangement.End,
     modifier = Modifier.fillMaxWidth()
   ) {
-    Button(
-      onClick = { /*TODO*/ },
-      colors = ButtonDefaults.buttonColors(backgroundColor = profileCardBackgroundColor),
-      shape = RoundedCornerShape(20.dp)
-    ) {
-      Text(
-        text = "Account",
-        fontSize = 12.sp, // Set the font size for the title
-        fontWeight = FontWeight.Bold, // Set font weight for bold text
-        color = textColor
-      )
-    }
 
     Button(
-      onClick = { /*TODO*/ },
-      colors = ButtonDefaults.buttonColors(backgroundColor = colorPrimaryProfile2),
+      onClick = { coroutineScope.launch {
+        auth.signOut()
+        navController.navigate(Screen.Login.route)
+      } },
+      colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
       shape = RoundedCornerShape(20.dp)
     ) {
       Text(
@@ -175,17 +148,23 @@ fun Footer() {
 }
 
 @Composable
-private fun ProfileContent(profileData: ProfileData, address: String) {
-  val text = "data"
-  Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(20.dp)
-  ) {
-    Header(profileData.name, profileData.level.experience)
-    Body(profileData.email, address, profileData.settings.temperatureFormat)
-    Footer()
+private fun ProfileContent(
+  auth: GoogleAuthUiClient,
+  navController: NavHostController,
+  address: String
+) {
+  auth.getSignedInUser()?.let {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+      Header(it.username, it.profilePictureUrl)
+      Body(it.email, address, "CELSIUS")
+      Footer(auth, navController)
 //    ProfileCard(text)
+    }
   }
+
 }
 
 @Composable

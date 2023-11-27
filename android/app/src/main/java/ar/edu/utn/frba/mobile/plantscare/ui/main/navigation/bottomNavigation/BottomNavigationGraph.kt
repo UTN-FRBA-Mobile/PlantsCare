@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -26,15 +25,14 @@ import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.GuidesViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
-import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
 import ar.edu.utn.frba.mobile.plantscare.ui.main.guide.Guide
-import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.GoogleAuthUiClient
-import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.LoginScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.GoogleAuthUiClient
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.LoginScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
@@ -60,7 +58,6 @@ fun BottomNavigationGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
     auth: GoogleAuthUiClient,
-    context: Context,
     applicationViewModel: ApplicationViewModel
 ) {
 
@@ -76,7 +73,7 @@ fun BottomNavigationGraph(
         composable(route= Screen.Watering.route) {
             Watering(navController, viewModel<WateringViewModel>().state)
         }
-        composable(route= Screen.Guides.route) { 
+        composable(route= Screen.Guides.route) {
             Guides(navController, viewModel<GuidesViewModel>().state)
         }
         composable(route= Screen.GuidesArticle.route) {
@@ -84,7 +81,7 @@ fun BottomNavigationGraph(
         }
         composable(route= Screen.Profile.route) {
 
-            Profile(navController, viewModel<ProfileViewModel>().state, applicationViewModel)
+            Profile(auth, navController, applicationViewModel)
         }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0

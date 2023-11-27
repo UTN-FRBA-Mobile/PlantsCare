@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn
+package ar.edu.utn.frba.mobile.plantscare.ui.main.login
 
 import android.app.Activity.RESULT_OK
 import android.widget.Toast
@@ -12,6 +12,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.SignInScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.SignInViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
