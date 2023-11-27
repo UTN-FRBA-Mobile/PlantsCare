@@ -30,6 +30,7 @@ import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.model.PlantInfo
 import ar.edu.utn.frba.mobile.plantscare.model.PlantWateringHistory
 import ar.edu.utn.frba.mobile.plantscare.model.WateringStatus
+import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
 import ar.edu.utn.frba.mobile.plantscare.ui.main.stringToLocalDate
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.ImageFromUrl
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.TextWithTitle
@@ -148,6 +149,6 @@ private fun getImage(status: WateringStatus): Int {
 
 private suspend fun water(plantInfo: PlantInfo, status: WateringStatus) {
     if (status == WateringStatus.NEEDS_WATERING) {
-//        PlantsClient.myPlant.waterPlantById(plantInfo.id)
+        PlantsClient.myPlant.waterPlantById(plantInfo.id)
     }
 }

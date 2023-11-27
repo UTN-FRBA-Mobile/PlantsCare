@@ -19,7 +19,7 @@ interface MyPlantService {
     @GET("plants")
     suspend fun getPlants(): List<PlantInfo>
 
-    @POST("/plants/{id}/water")
+    @POST("/plants/{id}/watering")
     suspend fun waterPlantById(@Path("id") id: Int) {
         Log.i("Watered", "Watered plant $id")
     }
