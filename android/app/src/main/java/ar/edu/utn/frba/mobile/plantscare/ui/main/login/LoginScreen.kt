@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.SignInScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.SignInViewModel
+import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation.Screen
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ fun LoginScreen(navController: NavHostController, googleAuthUiClient: GoogleAuth
 
     LaunchedEffect(key1 = Unit) {
         if(googleAuthUiClient.getSignedInUser() != null) {
-            navController.navigate("plants")
+            navController.navigate(Screen.MyPlants.route)
         }
     }
 
@@ -51,7 +52,7 @@ fun LoginScreen(navController: NavHostController, googleAuthUiClient: GoogleAuth
                 Toast.LENGTH_LONG
             ).show()
 
-            navController.navigate("plants")
+            navController.navigate(Screen.MyPlants.route)
             viewModel.resetState()
         }
     }

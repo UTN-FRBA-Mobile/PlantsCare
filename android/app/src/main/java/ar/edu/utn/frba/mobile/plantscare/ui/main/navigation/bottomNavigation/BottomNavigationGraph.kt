@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
 import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
+import ar.edu.utn.frba.mobile.plantscare.services.GuideViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.GuidesViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
@@ -46,7 +47,7 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
     object NewPlant : Screen("newPlant", R.string.new_plant_button, Icons.Default.Add)
     object Watering : Screen("watering", R.string.watering_button, Icons.Default.DateRange)
     object Guides : Screen("guides", R.string.guides_button, Icons.Default.Search)
-    object GuidesArticle : Screen("guideArticle", R.string.guides_button, Icons.Default.Search)
+    object Guide : Screen("guides/{id}/info", R.string.guides_button, Icons.Default.Search)
     object Profile : Screen("profile", R.string.profile_button, Icons.Default.Person)
     object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.EnergySavingsLeaf)
     object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.WaterDrop)
@@ -76,9 +77,6 @@ fun BottomNavigationGraph(
         composable(route= Screen.Guides.route) {
             Guides(navController, viewModel<GuidesViewModel>().state)
         }
-        composable(route= Screen.GuidesArticle.route) {
-            Guide(navController)
-        }
         composable(route= Screen.Profile.route) {
 
             Profile(auth, navController, applicationViewModel)
@@ -106,6 +104,13 @@ fun BottomNavigationGraph(
                 PlantsClient.myPlant.getPlantById(it)
             }
             WateringFrequency(myPlantViewModel.state)
+        }
+
+        composable(route= Screen.Guide.route) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
+            val guideViewModel = viewModel<GuideViewModel>()
+            guideViewModel.setId(id)
+            Guide(navController, guideViewModel.state)
         }
     }
 }

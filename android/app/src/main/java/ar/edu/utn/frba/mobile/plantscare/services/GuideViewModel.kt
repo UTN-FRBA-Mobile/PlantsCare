@@ -1,10 +1,10 @@
 package ar.edu.utn.frba.mobile.plantscare.services
 
 import android.util.Log
-import ar.edu.utn.frba.mobile.plantscare.model.Article
+import ar.edu.utn.frba.mobile.plantscare.model.GuideData
 import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
 
-class GuideViewModel: APIViewModel<Article>() {
+class GuideViewModel: APIViewModel<GuideData>() {
   private var id: Int = -1
   fun setId(id: Int) {
     if (id != this.id) {

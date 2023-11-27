@@ -28,46 +28,47 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
-import ar.edu.utn.frba.mobile.plantscare.model.GuidesData
-import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation.Screen
+import ar.edu.utn.frba.mobile.plantscare.model.GuideData
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
+import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.navigateToRoute
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
 
 data class PlantGuide(
+    val id: Int,
     val name: String,
     val imageResId: Int,
     val timeToRead: Int
 )
 
 val myPlantGuidesList = listOf(
-    PlantGuide("Planta 1", R.drawable.default_guide, 10),
-    PlantGuide("Planta 2", R.drawable.default_guide, 10),
-    PlantGuide("Planta 3", R.drawable.default_guide, 10),
-    PlantGuide("Planta 4", R.drawable.default_guide, 10),
-    PlantGuide("Planta 5", R.drawable.default_guide, 10),
-    PlantGuide("Planta 6", R.drawable.default_guide, 10),
-    PlantGuide("Planta 7", R.drawable.default_guide, 10),
-    PlantGuide("Planta 8", R.drawable.default_guide, 10),
-    PlantGuide("Menta 9", R.drawable.default_guide, 10),
-    PlantGuide("Pothos 10", R.drawable.default_guide, 10),
+    PlantGuide(1,"Planta 1", R.drawable.default_guide, 10),
+    PlantGuide(2,"Planta 2", R.drawable.default_guide, 10),
+    PlantGuide(3,"Planta 3", R.drawable.default_guide, 10),
+    PlantGuide(4,"Planta 4", R.drawable.default_guide, 10),
+    PlantGuide(5,"Planta 5", R.drawable.default_guide, 10),
+    PlantGuide(6,"Planta 6", R.drawable.default_guide, 10),
+    PlantGuide(7,"Planta 7", R.drawable.default_guide, 10),
+    PlantGuide(8,"Planta 8", R.drawable.default_guide, 10),
+    PlantGuide(9,"Menta 9", R.drawable.default_guide, 10),
+    PlantGuide(10,"Pothos 10", R.drawable.default_guide, 10),
 )
 
 @Composable
-fun Guides(navController: NavHostController, state: APICallState<List<GuidesData>>) {
+fun Guides(navController: NavHostController, state: APICallState<List<GuideData>>) {
     loadScreen(state = state) {
         MyGuidesScreen(it, navController)
     }
 }
 
 @Composable
-fun MyGuidesScreen(guidesData: List<GuidesData>, navController: NavHostController) {
-    println(guidesData)
+fun MyGuidesScreen(guideData: List<GuideData>, navController: NavHostController) {
+    println(guideData)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        SearchAndItemList(items = guidesData.map { PlantGuide(it.name, R.drawable.default_guide, it.readingTimeInMinutes) }, navController)
+        SearchAndItemList(items = guideData.map { PlantGuide(it.id, it.name, R.drawable.default_guide, it.readingTimeInMinutes) }, navController)
     }
 }
 
@@ -151,7 +152,7 @@ fun BoxItem(item: PlantGuide, navController: NavHostController) {
             .width(160.dp)
             .height(110.dp)
             .clickable {
-                navController.navigate(Screen.GuidesArticle.route)
+                navigateToRoute(navController, "guides/${item.id}/info")
             }
     ) {
         Image(painter = painterResource(id = item.imageResId),
@@ -160,8 +161,7 @@ fun BoxItem(item: PlantGuide, navController: NavHostController) {
                 .fillMaxSize()
                 .width(160.dp)
                 .height(110.dp)
-                .clip(RoundedCornerShape(8.dp))
-            ,
+                .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
             )
         Box(
