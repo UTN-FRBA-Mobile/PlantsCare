@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "132857721549",
+    "project_id": "plantscare-mobile",
+    "storage_bucket": "plantscare-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132857721549:android:e7b0699862e43c3281af84",
+        "android_client_info": {
+          "package_name": "ar.edu.utn.frba.mobile.plantscare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132857721549-7ijv5l7hetbtnkgsvujmm39imsjn7f5h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ar.edu.utn.frba.mobile.plantscare",
+            "certificate_hash": "ab91971f0913f839382321b8044624c3b638a7e0"
+          }
+        },
+        {
+          "client_id": "132857721549-4r77mbmppc0j43t4khr7fn7rkt0919j1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQBpNaX8OUkCXOaCQQXluDrLU6_sRsb34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132857721549-4r77mbmppc0j43t4khr7fn7rkt0919j1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
