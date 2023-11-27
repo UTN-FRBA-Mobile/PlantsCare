@@ -46,18 +46,6 @@ fun SignInScreen(
             ).show()
         }
     }
-/*
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(onClick = onSignInClick) {
-            Text(text = "Sign in")
-        }
-    }
-*/
 
     Box(
         contentAlignment = Alignment.Center,

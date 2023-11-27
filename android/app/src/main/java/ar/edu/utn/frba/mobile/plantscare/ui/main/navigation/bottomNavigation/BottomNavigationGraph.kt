@@ -64,7 +64,7 @@ fun BottomNavigationGraph(
         startDestination = Screen.Login.route,
         Modifier.padding(paddingValues)
     ) {
-        composable(route= Screen.Login.route) { LoginScreen(navController, auth, context) }
+        composable(route= Screen.Login.route) { LoginScreen(navController, auth) }
         composable(route= Screen.MyPlants.route) {
             MyPlants(navController, viewModel<MyPlantsViewModel>().state)
         }
