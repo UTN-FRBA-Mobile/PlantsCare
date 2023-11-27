@@ -1,5 +1,8 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main
 
+import android.Manifest
+import android.content.Context
+import android.location.Location
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,11 +41,20 @@ import ar.edu.utn.frba.mobile.plantscare.ui.theme.colorPrimaryProfile2
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.profileCardBackgroundColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColor
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.textColorLight
+import androidx.compose.runtime.*
+import android.location.Address
+import android.location.Geocoder
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.LiveData
+import ar.edu.utn.frba.mobile.plantscare.live.data.LocationDetails
+import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
+import androidx.compose.runtime.livedata.observeAsState
+import java.util.Locale
 
 @Composable
-fun Profile(navController: NavHostController, profileUiState: APICallState<ProfileData>) {
+fun Profile(navController: NavHostController, profileUiState: APICallState<ProfileData>, applicationViewModel: ApplicationViewModel) {
   loadScreen(profileUiState) {
-    ResultScreen(it)
+    ResultScreen(it, applicationViewModel)
   }
 }
 
@@ -50,15 +62,31 @@ fun Profile(navController: NavHostController, profileUiState: APICallState<Profi
  * ResultScreen displaying number of photos retrieved.
  */
 @Composable
-fun ResultScreen(profileData: ProfileData) {
-  Box(
-    contentAlignment = Alignment.Center,
-    modifier = Modifier
-      .fillMaxSize()
-      .background(Color.White)
-      .padding(32.dp)
-  ) {
-    ProfileContent(profileData)
+fun ResultScreen(profileData: ProfileData, applicationViewModel: ApplicationViewModel) {
+
+
+//val a: LocationLiveData = applicationViewModel.
+  val locationLiveData: LiveData<LocationDetails> = applicationViewModel.getLocationLiveData()
+  val locationState by locationLiveData.observeAsState()
+  locationState?.let{
+//    Text(text = it.latitude)
+    val geocoder = Geocoder(LocalContext.current, Locale.getDefault())
+    val addresses: MutableList<Address>? = geocoder.getFromLocation(it.latitude.toDouble(), it.longitude.toDouble(), 1)
+      addresses?.let {
+        val address = addresses[0]
+        val city = address.locality ?: ""
+        val country = address.countryName ?: ""
+        val result = "$city, $country"
+        Box(
+          contentAlignment = Alignment.Center,
+          modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(32.dp)
+        ) {
+          ProfileContent(profileData, result)
+        }
+      }
   }
 }
 
@@ -147,14 +175,14 @@ fun Footer() {
 }
 
 @Composable
-private fun ProfileContent(profileData: ProfileData) {
+private fun ProfileContent(profileData: ProfileData, address: String) {
   val text = "data"
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(20.dp)
   ) {
     Header(profileData.name, profileData.level.experience)
-    Body(profileData.email, profileData.settings.location, profileData.settings.temperatureFormat)
+    Body(profileData.email, address, profileData.settings.temperatureFormat)
     Footer()
 //    ProfileCard(text)
   }
@@ -203,7 +231,7 @@ fun ResultScreenPreview() {
     Level(4),
     Settings("Celsius", "Buenos Aires")
   )
-  ResultScreen(data)
+//  ResultScreen(data)
 }
 
 @Preview

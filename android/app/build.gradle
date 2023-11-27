@@ -92,4 +92,12 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
+    //Location
+    implementation "com.google.accompanist:accompanist-permissions:0.33.2-alpha"
+//    implementation "com.google.accompanist:accompanist-location:0.18.0"
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+
+    //View model compose
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0"
+    implementation "androidx.compose.runtime:runtime-livedata:1.1.0-alpha02"
 }
