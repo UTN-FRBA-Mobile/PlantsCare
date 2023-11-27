@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { WateringHistoryStatus } from '../model/WateringHistoryStatus';
-import { IsDate } from 'class-validator';
+import { IsDate, IsOptional } from 'class-validator';
 
 @Exclude()
 export class PlantWateringStatusDto {

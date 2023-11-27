@@ -3,6 +3,7 @@ import { PlantWateringDto } from '../dtos/PlantWatering.dto';
 import { WateringService } from '../providers/Watering.service';
 import { plainToInstance } from 'class-transformer';
 import { PlantWateringStatusDto } from '../dtos/PlantWateringStatus.dto';
+import { startOfToday } from 'date-fns';
 
 @Controller('/plants/:plantId/watering')
 export class PlantWateringController {
@@ -16,7 +17,9 @@ export class PlantWateringController {
       PlantWateringStatusDto,
       await this.wateringService.waterPlant(
         +plantId,
-        new Date(plantWateringDto.date),
+        plantWateringDto.date
+          ? new Date(plantWateringDto.date)
+          : startOfToday(),
       ),
     );
   }

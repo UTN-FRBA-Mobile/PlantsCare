@@ -51,7 +51,9 @@ export class PlantController {
   addNextWatering(plant: PlantResponseDto): PlantResponseDto {
     return {
       ...plant,
-      status: plant.status,
+      status: plant.history.find(
+        (history) => history.date.getTime() == startOfToday().getTime(),
+      ).status,
       nextWateringInDays: differenceInDays(
         this.getNextWater(plant).date,
         startOfToday(),
@@ -60,8 +62,12 @@ export class PlantController {
   }
 
   private getNextWater(plant: PlantResponseDto) {
+    console.log(plant.id);
+    console.log(plant.history);
     return plant.history.find(
-      (history) => history.status === WateringHistoryStatus.NEEDS_WATERING,
+      (history) =>
+        history.date.getTime() >= startOfToday().getTime() &&
+        history.status === WateringHistoryStatus.NEEDS_WATERING,
     );
   }
 

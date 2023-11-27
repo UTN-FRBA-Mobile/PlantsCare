@@ -193,7 +193,7 @@ fun ArticleView(article: Article) {
 fun ArticleScreen(guide: GuideData) {
   val article = Article(
     name = guide.name,
-    readingTimeMinutes = 10,
+    readingTimeMinutes = guide.readingTimeInMinutes,
     author = guide.author,
     createdAt = guide.createdAt,
     title = guide.title,
