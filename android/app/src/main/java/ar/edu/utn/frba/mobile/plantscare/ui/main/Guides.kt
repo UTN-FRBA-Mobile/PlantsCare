@@ -1,36 +1,35 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.model.GuidesData
-import ar.edu.utn.frba.mobile.plantscare.model.WateringData
+import ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation.Screen
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.APICallState
 import ar.edu.utn.frba.mobile.plantscare.ui.main.utils.api.loadScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.theme.LightGreen50Color
@@ -57,23 +56,23 @@ val myPlantGuidesList = listOf(
 @Composable
 fun Guides(navController: NavHostController, state: APICallState<List<GuidesData>>) {
     loadScreen(state = state) {
-        MyGuidesScreen(it)
+        MyGuidesScreen(it, navController)
     }
 }
 
 @Composable
-fun MyGuidesScreen(guidesData: List<GuidesData>) {
+fun MyGuidesScreen(guidesData: List<GuidesData>, navController: NavHostController) {
     println(guidesData)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        SearchAndItemList(items = guidesData.map { PlantGuide(it.name, R.drawable.default_guide, it.readingTimeInMinutes) })
+        SearchAndItemList(items = guidesData.map { PlantGuide(it.name, R.drawable.default_guide, it.readingTimeInMinutes) }, navController)
     }
 }
 
 @Composable
-fun SearchAndItemList(items : List<PlantGuide>) {
+fun SearchAndItemList(items : List<PlantGuide>, navController: NavHostController) {
     var searchQuery by remember { mutableStateOf("") }
     //val items = (1..10).toList() // Reemplaza con tu lista de elementos
 
@@ -83,7 +82,7 @@ fun SearchAndItemList(items : List<PlantGuide>) {
     ) {
         Text(text = "Plants Guide", fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(18.dp))
         SearchBar(searchQuery = searchQuery, onSearchQueryChange = { searchQuery = it })
-        ItemList(items = items, searchQuery = searchQuery)
+        ItemList(items = items, searchQuery = searchQuery, navController)
     }
 }
 
@@ -105,7 +104,8 @@ fun SearchBar(searchQuery: String, onSearchQueryChange: (String) -> Unit){
             modifier = Modifier
                 .width(350.dp)
                 .height(50.dp)
-                .padding(8.dp)
+                .padding(8.dp),
+            singleLine = true
         )
         Icon(
             imageVector = Icons.Filled.Search,
@@ -118,7 +118,7 @@ fun SearchBar(searchQuery: String, onSearchQueryChange: (String) -> Unit){
 }
 
 @Composable
-fun ItemList(items : List<PlantGuide>, searchQuery : String) {
+fun ItemList(items : List<PlantGuide>, searchQuery : String, navController: NavHostController) {
 val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
     LazyColumn(
@@ -136,7 +136,7 @@ val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = tr
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     for (item in rowItems) {
-                        BoxItem(item = item)
+                        BoxItem(item = item, navController)
                     }
                 }
             }
@@ -145,11 +145,14 @@ val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = tr
 }
 
 @Composable
-fun BoxItem(item: PlantGuide) {
+fun BoxItem(item: PlantGuide, navController: NavHostController) {
     Box(
         modifier = Modifier
             .width(160.dp)
             .height(110.dp)
+            .clickable {
+                navController.navigate(Screen.GuidesArticle.route)
+            }
     ) {
         Image(painter = painterResource(id = item.imageResId),
             contentDescription = "background image",
@@ -199,5 +202,5 @@ fun BoxItem(item: PlantGuide) {
 @Preview
 @Composable
 fun SearchAndItemListPreview(@PreviewParameter(PreviewParameterProvider::class) params: Unit) {
-    SearchAndItemList(items = myPlantGuidesList)
+    SearchAndItemList(items = myPlantGuidesList, navController = rememberNavController())
 }

@@ -31,6 +31,7 @@ import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
+import ar.edu.utn.frba.mobile.plantscare.ui.main.guide.Guide
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
@@ -44,6 +45,7 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
     object NewPlant : Screen("newPlant", R.string.new_plant_button, Icons.Default.Add)
     object Watering : Screen("watering", R.string.watering_button, Icons.Default.DateRange)
     object Guides : Screen("guides", R.string.guides_button, Icons.Default.Search)
+    object GuidesArticle : Screen("guideArticle", R.string.guides_button, Icons.Default.Search)
     object Profile : Screen("profile", R.string.profile_button, Icons.Default.Person)
     object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.EnergySavingsLeaf)
     object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.WaterDrop)
@@ -70,6 +72,9 @@ fun BottomNavigationGraph(
         }
         composable(route= Screen.Guides.route) { 
             Guides(navController, viewModel<GuidesViewModel>().state)
+        }
+        composable(route= Screen.GuidesArticle.route) {
+            Guide(navController)
         }
         composable(route= Screen.Profile.route) {
             Profile(navController, viewModel<ProfileViewModel>().state)
