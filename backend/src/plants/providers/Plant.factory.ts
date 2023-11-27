@@ -41,9 +41,9 @@ export class PlantFactory {
     const winter = Math.max(factor - 1, 4);
     const spring = Math.max(factor - 3, 3);
     return new WateringFrequency(
-      summer,
-      summer,
-      summer,
+      2,
+      2,
+      2,
       autumn,
       autumn,
       winter,
@@ -52,7 +52,7 @@ export class PlantFactory {
       spring,
       spring,
       spring,
-      summer,
+      2,
     );
   }
 
@@ -98,9 +98,8 @@ export class PlantFactory {
   }
 
   private getNameAndDescription() {
-    return this.getPlantsData()[
-      Math.floor(Math.random() * this.getPlantsData().length)
-    ];
+    return this.getPlantsData()[4];
+    // Math.floor(Math.random() * this.getPlantsData().length)
   }
 
   private getPlantsData() {
@@ -130,10 +129,10 @@ export class PlantFactory {
           'Snake plant can be considered a houseplant and an architectural display due to its sword-like leaves with bold striping patterns, which are distinctive and eye-catching. However, use caution with this plant because it is poisonous when ingested and can cause nausea, vomiting, and even swelling of the throat and tongue. ',
       },
       {
-        type: 'Hyacinth',
+        type: 'Albahaca',
         image: 'https://i.imgur.com/FioQT6e.jpeg',
         description:
-          'Water hyacinth (Eichhornia crassipes) is a fast-growing flowering plant species with ovular, waxy leaves. Water hyacinth is listed as a federal noxious weed in the United States. This species is invasive to ponds, lakes, rivers and other wetland habitats. It forms dense, floating mats of vegetation that restricts light to underwater environments. ',
+          'La albahaca (Ocimum basilicum) se asocia de entrada con el sabor de la cocina mediterránea, si bien es originaria de la India, donde se suele consagrar a la deidad de Vishnu y se emplea a fondo en la medicina ayurvédica, junto a la muy similar albahaca sagrada o tulsi. ',
       },
     ];
   }

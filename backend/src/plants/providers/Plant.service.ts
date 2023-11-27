@@ -50,7 +50,9 @@ export class PlantService {
         },
         relations: ['history', 'wateringFrequency'],
       })
-      .then((plant) => plant || entityNotFoundError(Plant.name, id));
+      .then(
+        (plant) => plant?.sortHistory() || entityNotFoundError(Plant.name, id),
+      );
   }
 
   async create(userId: number, path: string): Promise<Plant> {

@@ -55,4 +55,12 @@ export class Plant extends PersistentObject {
   changeCurrentWateringFrequency(currentWateringFrequency: number): void {
     this.currentWateringFrequency = currentWateringFrequency;
   }
+
+  sortHistory() {
+    this.history = this.history.sort(
+      (history, otherHistory) =>
+        history.date.getTime() - otherHistory.date.getTime(),
+    );
+    return this;
+  }
 }
