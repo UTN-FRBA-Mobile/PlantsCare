@@ -20,17 +20,17 @@ import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 
 class MainActivity : ComponentActivity() {
   private val appViewModel: ApplicationViewModel by viewModels()
-    val googleAuthUiClient by lazy {
-        GoogleAuthUiClient(
-            context = applicationContext,
-            oneTapClient = Identity.getSignInClient(applicationContext)
-        )
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            App(googleAuthUiClient, applicationContext, appViewModel)
-        }
+  val googleAuthUiClient by lazy {
+    GoogleAuthUiClient(
+      context = applicationContext,
+      oneTapClient = Identity.getSignInClient(applicationContext)
+    )
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      App(googleAuthUiClient, applicationContext, appViewModel)
     }
     prepLocationUpdates()
   }
@@ -40,15 +40,20 @@ class MainActivity : ComponentActivity() {
         this,
         Manifest.permission.ACCESS_FINE_LOCATION
       ) == PackageManager.PERMISSION_GRANTED
-    ) { requestLocationUpdates() }
-    else { requestSinglePermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION) }
+    ) {
+      requestLocationUpdates()
+    } else {
+      requestSinglePermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
   }
 
-  private val requestSinglePermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-    isGranted ->
-      if(isGranted) { requestLocationUpdates() }
-    else { }
-  }
+  private val requestSinglePermissionLauncher =
+    registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+      if (isGranted) {
+        requestLocationUpdates()
+      } else {
+      }
+    }
 
   private fun requestLocationUpdates() {
     appViewModel.startLocationUpdates()
@@ -57,7 +62,16 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-private fun App(googleAuthUiClient: GoogleAuthUiClient, applicationContext: Context, applicationViewModel: ApplicationViewModel) {
-    val navController = rememberNavController()
-    AppScaffold(navController = navController, auth = googleAuthUiClient, context = applicationContext, applicationViewModel)
+private fun App(
+  googleAuthUiClient: GoogleAuthUiClient,
+  applicationContext: Context,
+  applicationViewModel: ApplicationViewModel
+) {
+  val navController = rememberNavController()
+  AppScaffold(
+    navController = navController,
+    auth = googleAuthUiClient,
+    context = applicationContext,
+    applicationViewModel
+  )
 }
