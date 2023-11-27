@@ -132,7 +132,7 @@ export class PlantFactory {
         type: 'Albahaca',
         image: 'https://i.imgur.com/FioQT6e.jpeg',
         description:
-          'La albahaca (Ocimum basilicum) se asocia de entrada con el sabor de la cocina mediterránea, si bien es originaria de la India, donde se suele consagrar a la deidad de Vishnu y se emplea a fondo en la medicina ayurvédica, junto a la muy similar albahaca sagrada o tulsi. ',
+          'La albahaca (Ocimum basilicum) is an annual, or sometimes perennial, herb used for its leaves. Depending on the variety, plants can reach heights of between 30 and 150 cm (1 and 5 ft). Its leaves are richly green and ovate, but otherwise come in a wide variety of sizes and shapes depending on cultivar. Leaf sizes range from 3 to 11 cm (1 to 4+1⁄2 in) long, and between 1 and 6 cm (1⁄2 and 2+1⁄2 in) wide',
       },
     ];
   }
