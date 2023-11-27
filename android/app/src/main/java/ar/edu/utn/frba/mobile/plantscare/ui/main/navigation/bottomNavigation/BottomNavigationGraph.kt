@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
 import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
+import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.GuidesViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
@@ -59,7 +60,8 @@ fun BottomNavigationGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
     auth: GoogleAuthUiClient,
-    context: Context
+    context: Context,
+    applicationViewModel: ApplicationViewModel
 ) {
 
     NavHost(navController = navController,
@@ -81,7 +83,8 @@ fun BottomNavigationGraph(
             Guide(navController)
         }
         composable(route= Screen.Profile.route) {
-            Profile(navController, viewModel<ProfileViewModel>().state)
+
+            Profile(navController, viewModel<ProfileViewModel>().state, applicationViewModel)
         }
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
