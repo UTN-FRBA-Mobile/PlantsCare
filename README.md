@@ -25,11 +25,17 @@ Your Essential Gardening Companion
 
 ## Screenshots
 
-![Screenshot](images/screen1.png)
-![Screenshot](images/screen2.png)
-![Screenshot](images/screen3.png)
-![Screenshot](images/screen4.png)
-![Screenshot](images/screen5.png)
+![Screenshot](images/image1.jpeg)
+![Screenshot](images/image2.jpeg)
+![Screenshot](images/image3.jpeg)
+![Screenshot](images/image4.jpeg)
+![Screenshot](images/image5.jpeg)
+![Screenshot](images/image6.jpeg)
+![Screenshot](images/image7.jpeg)
+![Screenshot](images/image8.jpeg)
+![Screenshot](images/image9.jpeg)
+![Screenshot](images/image10.jpeg)
+![Screenshot](images/image11.jpeg)
 
 
 ## License
