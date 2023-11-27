@@ -81,10 +81,7 @@ export class PlantController {
   async createPlant(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          //new MaxFileSizeValidator({ maxSize: 5000 * 1024 }),
-          new FileTypeValidator({ fileType: 'image/jpeg' }),
-        ],
+        validators: [new FileTypeValidator({ fileType: 'image/jpeg' })],
       }),
     )
     image: Express.Multer.File,

@@ -5,7 +5,7 @@ import android.graphics.Matrix
 import androidx.camera.core.ImageProxy
 import java.nio.ByteBuffer
 
-fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
+fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap? {
     val rotationMatrix = Matrix().apply {
         postRotate(90f)
     }
@@ -14,7 +14,7 @@ fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
     val remaining = buffer.remaining()
     val bytes = ByteArray(remaining)
     buffer.get(bytes)
-    val bitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, rotationMatrix, true)
+    val bitmap: Bitmap? = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    return bitmap?.let { Bitmap.createBitmap(it, 0, 0, bitmap.width, bitmap.height, rotationMatrix, true) }
 
 }

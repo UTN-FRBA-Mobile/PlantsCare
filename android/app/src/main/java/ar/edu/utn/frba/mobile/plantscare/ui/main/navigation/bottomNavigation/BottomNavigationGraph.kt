@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.mobile.plantscare.ui.main.navigation.bottomNavigation
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ar.edu.utn.frba.mobile.plantscare.R
+import ar.edu.utn.frba.mobile.plantscare.network.PlantsClient
 import ar.edu.utn.frba.mobile.plantscare.services.ApplicationViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.GuidesViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.MyPlantViewModel
@@ -27,10 +29,12 @@ import ar.edu.utn.frba.mobile.plantscare.services.MyPlantsViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.ProfileViewModel
 import ar.edu.utn.frba.mobile.plantscare.services.WateringViewModel
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Guides
-import ar.edu.utn.frba.mobile.plantscare.ui.main.Login
 import ar.edu.utn.frba.mobile.plantscare.ui.main.MyPlants
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Profile
 import ar.edu.utn.frba.mobile.plantscare.ui.main.Watering
+import ar.edu.utn.frba.mobile.plantscare.ui.main.guide.Guide
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.GoogleAuthUiClient
+import ar.edu.utn.frba.mobile.plantscare.ui.main.login.signIn.LoginScreen
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.MyPlantInfoView
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.WateringFrequency
 import ar.edu.utn.frba.mobile.plantscare.ui.main.myPlant.history.PlantHistory
@@ -44,6 +48,7 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
     object NewPlant : Screen("newPlant", R.string.new_plant_button, Icons.Default.Add)
     object Watering : Screen("watering", R.string.watering_button, Icons.Default.DateRange)
     object Guides : Screen("guides", R.string.guides_button, Icons.Default.Search)
+    object GuidesArticle : Screen("guideArticle", R.string.guides_button, Icons.Default.Search)
     object Profile : Screen("profile", R.string.profile_button, Icons.Default.Person)
     object MyPlantInfo : Screen("${MyPlantBaseRoute}/info", R.string.my_plant_info, Icons.Default.EnergySavingsLeaf)
     object History : Screen("${MyPlantBaseRoute}/history", R.string.my_plant_history, Icons.Default.WaterDrop)
@@ -54,6 +59,8 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int, val icon:
 fun BottomNavigationGraph(
     navController: NavHostController,
     paddingValues: PaddingValues,
+    auth: GoogleAuthUiClient,
+    context: Context,
     applicationViewModel: ApplicationViewModel
 ) {
 
@@ -61,7 +68,7 @@ fun BottomNavigationGraph(
         startDestination = Screen.Login.route,
         Modifier.padding(paddingValues)
     ) {
-        composable(route= Screen.Login.route) { Login(navController) }
+        composable(route= Screen.Login.route) { LoginScreen(navController, auth) }
         composable(route= Screen.MyPlants.route) {
             MyPlants(navController, viewModel<MyPlantsViewModel>().state)
         }
@@ -72,6 +79,9 @@ fun BottomNavigationGraph(
         composable(route= Screen.Guides.route) { 
             Guides(navController, viewModel<GuidesViewModel>().state)
         }
+        composable(route= Screen.GuidesArticle.route) {
+            Guide(navController)
+        }
         composable(route= Screen.Profile.route) {
 
             Profile(navController, viewModel<ProfileViewModel>().state, applicationViewModel)
@@ -79,19 +89,25 @@ fun BottomNavigationGraph(
         composable(route= Screen.MyPlantInfo.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
             val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
+            myPlantViewModel.setId(id) {
+                PlantsClient.myPlant.getPlantById(it)
+            }
             MyPlantInfoView(myPlantViewModel.state)
         }
         composable(route= Screen.History.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
             val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
+            myPlantViewModel.setId(id) {
+                PlantsClient.myPlant.getPlantById(it)
+            }
             PlantHistory(myPlantViewModel.state)
         }
         composable(route= Screen.WateringFrequency.route) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toInt() ?: 0
             val myPlantViewModel = viewModel<MyPlantViewModel>()
-            myPlantViewModel.setId(id)
+            myPlantViewModel.setId(id) {
+                PlantsClient.myPlant.getPlantById(it)
+            }
             WateringFrequency(myPlantViewModel.state)
         }
     }

@@ -26,3 +26,9 @@ data class PlantInfo(
     val wateringFrequency: Map<String, Int>,
     val history: List<PlantWateringHistory>
 )
+
+@Serializable
+data class SimplePlantInfo (
+    val name: String,
+    val properties: PlantProperties,
+)
